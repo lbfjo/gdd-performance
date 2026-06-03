@@ -23,8 +23,8 @@ export default function TabAlerts() {
           ...a,
           severity: !prevSet.has(a.id) ? 'critical' : 'warning',
           detail: !prevSet.has(a.id)
-            ? '0 sessions this week · 0 last week'
-            : '0 sessions this week · attended last week',
+            ? '0 sessões esta semana · 0 na semana passada'
+            : '0 sessões esta semana · presente na semana passada',
         }))
         .sort((a, b) => (a.severity === 'critical' ? -1 : 1))
 
@@ -34,21 +34,27 @@ export default function TabAlerts() {
     load().catch(() => setLoading(false))
   }, [])
 
-  if (loading) return <p className="loading-state">Loading...</p>
+  if (loading) return <p className="loading-state">A carregar…</p>
 
   return (
     <>
       {alerts.length > 0 && (
-        <p className="alerts-summary">{alerts.length} athlete{alerts.length !== 1 ? 's' : ''} missed this week</p>
+        <p className="alerts-summary">{alerts.length} atleta{alerts.length !== 1 ? 's' : ''} em falta esta semana</p>
       )}
       {alerts.length === 0 ? (
-        <p className="alerts-empty">All athletes checked in this week 🎉</p>
+        <p className="alerts-empty">Todos os atletas fizeram check-in esta semana 🎉</p>
       ) : (
         <div className="alert-list">
           {alerts.map(a => (
             <div key={a.id} className={`alert-card ${a.severity}`}>
-              <p className={`alert-name ${a.severity}`}>{a.name}</p>
-              <p className="alert-detail">{a.detail}</p>
+              <div className={`alert-indicator ${a.severity}`} />
+              <div className="alert-info">
+                <p className={`alert-name ${a.severity}`}>{a.name}</p>
+                <p className="alert-detail">{a.detail}</p>
+              </div>
+              <span className={`pill ${a.severity === 'critical' ? 'pill-red' : 'pill-amber'}`}>
+                {a.severity === 'critical' ? 'Falta' : 'Pendente'}
+              </span>
             </div>
           ))}
         </div>

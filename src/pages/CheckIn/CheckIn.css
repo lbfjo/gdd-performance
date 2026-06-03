@@ -1,63 +1,332 @@
+/* ── Check-in page shell ── */
 .checkin-page {
-  min-height: 100dvh; display: flex; flex-direction: column;
-  background: #111827; max-width: 480px; margin: 0 auto;
+  min-height: 100dvh;
+  display: flex;
+  flex-direction: column;
+  background: var(--dark);
+  max-width: 480px;
+  margin: 0 auto;
+  position: relative;
+  overflow: hidden;
 }
 
-.checkin-header {
-  padding: 24px 20px 16px; text-align: center;
-  border-bottom: 1px solid #1f2937;
+/* ── Splash / landing screen ── */
+.splash-bg {
+  position: absolute; inset: 0;
+  background:
+    linear-gradient(180deg, rgba(7,24,58,0.55) 0%, rgba(13,15,20,0.92) 55%, var(--dark) 100%),
+    radial-gradient(ellipse at 60% 20%, rgba(200,16,46,0.18) 0%, transparent 60%);
+  pointer-events: none;
 }
-.checkin-logo {
-  width: 52px; height: 52px; background: #1f2937;
-  border-radius: 50%; margin: 0 auto 10px;
-  display: flex; align-items: center; justify-content: center; font-size: 24px;
-}
-.checkin-title { font-size: 18px; font-weight: 700; }
-.checkin-subtitle { font-size: 13px; color: #6b7280; margin-top: 2px; }
 
-.checkin-body { flex: 1; padding: 20px; display: flex; flex-direction: column; }
+.splash-noise {
+  position: absolute; inset: 0; opacity: 0.035;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='1'/%3E%3C/svg%3E");
+  background-repeat: repeat;
+  pointer-events: none;
+}
+
+.splash-content {
+  position: relative; z-index: 1;
+  display: flex; flex-direction: column;
+  min-height: 100dvh; padding: 0 24px 40px;
+}
+
+/* Logo block */
+.gdd-logo-block {
+  padding-top: 56px;
+  text-align: center;
+  margin-bottom: auto;
+}
+
+.gdd-logo-wordmark {
+  font-family: 'Saira Condensed', sans-serif;
+  font-weight: 800;
+  font-size: 64px;
+  line-height: 0.9;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--red);
+  text-shadow: 0 0 40px rgba(200,16,46,0.4);
+}
+
+.gdd-logo-sub {
+  font-family: 'Saira Condensed', sans-serif;
+  font-size: 20px;
+  font-weight: 600;
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  color: var(--white);
+  margin-top: 2px;
+}
+
+.gdd-tagline {
+  font-family: 'Saira Condensed', sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--red);
+  margin-top: 12px;
+  opacity: 0.9;
+}
+
+/* Red accent line */
+.gdd-divider {
+  width: 40px; height: 2px;
+  background: var(--red);
+  margin: 20px auto;
+  border-radius: 1px;
+}
+
+/* Name search */
+.name-section {
+  display: flex; flex-direction: column; gap: 12px;
+  padding-top: 32px;
+}
 
 .search-input {
-  width: 100%; background: #1f2937; border: none; border-radius: 10px;
-  padding: 12px 16px; font-size: 15px; color: #f9fafb;
-  outline: none; margin-bottom: 14px;
+  width: 100%;
+  background: var(--card2);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  padding: 14px 16px;
+  font-family: 'Inter', sans-serif;
+  font-size: 15px;
+  color: var(--white);
+  outline: none;
+  transition: border-color 0.15s;
 }
-.search-input::placeholder { color: #6b7280; }
+.search-input:focus { border-color: rgba(200,16,46,0.5); }
+.search-input::placeholder { color: var(--muted); }
 
-.athlete-list { display: flex; flex-direction: column; gap: 6px; overflow-y: auto; }
+.athlete-list {
+  display: flex; flex-direction: column;
+  gap: 4px;
+  max-height: 340px;
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: var(--card2) transparent;
+}
+
 .athlete-item {
-  background: #1f2937; border: none; border-radius: 10px;
-  padding: 14px 16px; font-size: 15px; color: #f9fafb;
-  text-align: left; cursor: pointer; transition: background 0.1s;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  padding: 14px 16px;
+  font-family: 'Inter', sans-serif;
+  font-size: 15px;
+  font-weight: 500;
+  color: var(--white);
+  text-align: left;
+  cursor: pointer;
+  transition: background 0.1s, border-color 0.1s;
+  display: flex; align-items: center; gap: 12px;
 }
-.athlete-item:active { background: #374151; }
-.athlete-empty { color: #6b7280; font-size: 14px; text-align: center; padding: 20px 0; }
+.athlete-item::before {
+  content: '';
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  background: var(--muted);
+  flex-shrink: 0;
+  transition: background 0.1s;
+}
+.athlete-item:active,
+.athlete-item:hover { background: var(--card2); border-color: rgba(200,16,46,0.3); }
+.athlete-item:hover::before { background: var(--red); }
 
-.pin-subtitle { text-align: center; color: #6b7280; font-size: 14px; margin-bottom: 28px; }
-.pin-name { text-align: center; font-size: 20px; font-weight: 700; margin-bottom: 6px; }
+.athlete-empty {
+  color: var(--muted);
+  font-size: 14px;
+  text-align: center;
+  padding: 24px 0;
+  font-family: 'Inter', sans-serif;
+}
+
+/* ── PIN screen ── */
+.pin-screen {
+  position: relative; z-index: 1;
+  display: flex; flex-direction: column;
+  min-height: 100dvh;
+  padding: 0 24px 40px;
+}
+
+.pin-header {
+  padding-top: 48px;
+  text-align: center;
+  margin-bottom: 36px;
+}
+
+.pin-greeting {
+  font-family: 'Saira Condensed', sans-serif;
+  font-size: 40px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+  line-height: 1;
+  color: var(--white);
+}
+
+.pin-greeting span { color: var(--red); }
+
+.pin-label {
+  font-family: 'Inter', sans-serif;
+  font-size: 13px;
+  font-weight: 500;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-top: 10px;
+}
+
+.pin-body { flex: 1; display: flex; flex-direction: column; justify-content: center; }
+
 .pin-back {
-  background: none; border: none; color: #6b7280; font-size: 13px;
-  cursor: pointer; text-align: center; margin-top: 20px; padding: 8px;
+  background: none;
+  border: none;
+  color: var(--muted);
+  font-family: 'Inter', sans-serif;
+  font-size: 13px;
+  cursor: pointer;
+  text-align: center;
+  margin-top: 24px;
+  padding: 8px;
+  transition: color 0.15s;
+  letter-spacing: 0.04em;
+}
+.pin-back:hover { color: var(--white); }
+
+/* ── Success / confirm screen ── */
+.confirm-screen {
+  position: relative; z-index: 1;
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  min-height: 100dvh;
+  padding: 40px 24px;
+  text-align: center;
+  gap: 0;
 }
 
-.confirm-wrap {
-  flex: 1; display: flex; flex-direction: column;
-  align-items: center; justify-content: center; text-align: center; gap: 16px;
+.confirm-ring {
+  width: 140px; height: 140px;
+  border-radius: 50%;
+  border: 3px solid var(--green);
+  display: flex; align-items: center; justify-content: center;
+  margin-bottom: 28px;
+  position: relative;
+  box-shadow: 0 0 40px rgba(0,200,83,0.2), inset 0 0 40px rgba(0,200,83,0.05);
+  animation: ring-pulse 2s ease-in-out infinite;
 }
-.confirm-icon {
-  width: 80px; height: 80px; background: #052e16;
-  border-radius: 50%; display: flex; align-items: center;
-  justify-content: center; font-size: 40px;
+@keyframes ring-pulse {
+  0%, 100% { box-shadow: 0 0 40px rgba(0,200,83,0.2), inset 0 0 40px rgba(0,200,83,0.05); }
+  50%       { box-shadow: 0 0 60px rgba(0,200,83,0.35), inset 0 0 40px rgba(0,200,83,0.08); }
 }
-.confirm-name { font-size: 22px; font-weight: 700; }
-.confirm-time { font-size: 13px; color: #6b7280; }
-.confirm-week {
-  background: #052e16; border: 1px solid #166534; border-radius: 10px;
-  padding: 12px 20px; font-size: 13px; color: #4ade80;
-}
-.confirm-reset { font-size: 12px; color: #374151; margin-top: 8px; }
 
+.confirm-checkmark {
+  font-size: 56px;
+  line-height: 1;
+  color: var(--green);
+}
+
+.confirm-title {
+  font-family: 'Saira Condensed', sans-serif;
+  font-size: 42px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+  line-height: 1.05;
+  color: var(--white);
+  margin-bottom: 8px;
+}
+
+.confirm-athlete {
+  font-family: 'Inter', sans-serif;
+  font-size: 15px;
+  font-weight: 500;
+  color: var(--muted);
+  margin-bottom: 6px;
+}
+
+.confirm-time {
+  font-family: 'Inter', sans-serif;
+  font-size: 13px;
+  color: var(--muted);
+  opacity: 0.7;
+  margin-bottom: 28px;
+}
+
+.confirm-sessions {
+  background: var(--green-bg);
+  border: 1px solid rgba(0,200,83,0.2);
+  border-radius: 4px;
+  padding: 12px 24px;
+  font-family: 'Saira Condensed', sans-serif;
+  font-size: 16px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--green);
+  margin-bottom: 32px;
+}
+
+.confirm-continue {
+  width: 100%; max-width: 320px;
+  margin-bottom: 16px;
+}
+
+.confirm-reset {
+  font-family: 'Inter', sans-serif;
+  font-size: 12px;
+  color: var(--muted);
+  opacity: 0.5;
+  letter-spacing: 0.04em;
+}
+
+/* ── Already checked in ── */
+.already-screen {
+  position: relative; z-index: 1;
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  min-height: 100dvh;
+  padding: 40px 24px;
+  text-align: center;
+  gap: 16px;
+}
+
+.already-icon {
+  width: 100px; height: 100px;
+  border-radius: 50%;
+  border: 2px solid var(--amber);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 40px;
+  box-shadow: 0 0 30px rgba(245,158,11,0.15);
+}
+
+.already-title {
+  font-family: 'Saira Condensed', sans-serif;
+  font-size: 32px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+  color: var(--amber);
+}
+
+.already-sub {
+  font-family: 'Inter', sans-serif;
+  font-size: 14px;
+  color: var(--muted);
+  max-width: 260px;
+}
+
+/* Error banner */
 .error-banner {
-  background: #7f1d1d; border-radius: 8px; padding: 12px 16px;
-  font-size: 14px; color: #fca5a5; text-align: center; margin-bottom: 12px;
+  background: rgba(200,16,46,0.12);
+  border: 1px solid rgba(200,16,46,0.3);
+  border-radius: 4px;
+  padding: 12px 16px;
+  font-family: 'Inter', sans-serif;
+  font-size: 14px;
+  color: #F87171;
+  text-align: center;
+  margin-bottom: 12px;
 }

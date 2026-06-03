@@ -1,31 +1,55 @@
-.pinpad { display: flex; flex-direction: column; align-items: center; gap: 24px; width: 100%; }
-
-.pinpad-dots { display: flex; gap: 16px; }
-.pinpad-dot {
-  width: 16px; height: 16px; border-radius: 50%;
-  background: #374151; transition: background 0.15s;
+.pinpad {
+  display: flex; flex-direction: column;
+  align-items: center; gap: 28px; width: 100%;
 }
-.pinpad-dot.filled { background: #2563eb; }
-.pinpad-dot.error { background: #ef4444; }
+
+.pinpad-dots { display: flex; gap: 18px; }
+.pinpad-dot {
+  width: 14px; height: 14px; border-radius: 50%;
+  background: transparent;
+  border: 2px solid rgba(255,255,255,0.2);
+  transition: background 0.15s, border-color 0.15s, box-shadow 0.15s;
+}
+.pinpad-dot.filled {
+  background: var(--red);
+  border-color: var(--red);
+  box-shadow: 0 0 8px rgba(200,16,46,0.5);
+}
+.pinpad-dot.error { background: #F87171; border-color: #F87171; }
 
 .pinpad-grid {
   display: grid; grid-template-columns: repeat(3, 1fr);
-  gap: 10px; width: 100%; max-width: 280px;
+  gap: 10px; width: 100%; max-width: 300px;
 }
 
 .pinpad-key {
-  background: #1f2937; border: none; border-radius: 10px;
-  padding: 18px; font-size: 22px; font-weight: 600;
-  color: #f9fafb; cursor: pointer; user-select: none;
-  transition: background 0.1s; -webkit-tap-highlight-color: transparent;
+  background: var(--card2, #1A2030);
+  border: 1px solid rgba(255,255,255,0.07);
+  border-radius: 4px;
+  padding: 20px;
+  font-family: 'Saira Condensed', sans-serif;
+  font-size: 26px; font-weight: 700;
+  color: var(--white, #fff);
+  cursor: pointer; user-select: none;
+  transition: background 0.1s, transform 0.08s, border-color 0.1s;
+  -webkit-tap-highlight-color: transparent;
+  letter-spacing: 0.02em;
 }
-.pinpad-key:active { background: #374151; }
-.pinpad-key.backspace { font-size: 16px; color: #9ca3af; background: #374151; }
-.pinpad-key.empty { background: transparent; pointer-events: none; }
+.pinpad-key:active {
+  background: var(--card, #13181F);
+  transform: scale(0.94);
+  border-color: var(--red, #C8102E);
+}
+.pinpad-key.backspace {
+  font-size: 18px; color: var(--muted, #6B7280);
+  background: var(--card, #13181F);
+}
+.pinpad-key.backspace:active { color: var(--white, #fff); }
+.pinpad-key.empty { background: transparent; border-color: transparent; pointer-events: none; }
 
 @keyframes shake {
   0%, 100% { transform: translateX(0); }
-  20%, 60% { transform: translateX(-8px); }
-  40%, 80% { transform: translateX(8px); }
+  20%, 60% { transform: translateX(-10px); }
+  40%, 80% { transform: translateX(10px); }
 }
 .pinpad-dots.shake { animation: shake 0.4s ease; }

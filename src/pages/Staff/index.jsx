@@ -32,10 +32,12 @@ export default function Staff() {
 
   return (
     <div className="staff-page">
-      <div style={{ width: 56, height: 56, background: '#1f2937', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 26 }}>⚽</div>
-      <p className="staff-title">Staff Access</p>
-      <p className="staff-subtitle">Enter the shared staff PIN</p>
-      {pinError && <p className="staff-error">Incorrect PIN — try again</p>}
+      <div className="staff-logo">GDD</div>
+      <div className="staff-logo-sub">Performance</div>
+      <div className="staff-divider" />
+      <p className="staff-title">Acesso Staff</p>
+      <p className="staff-subtitle">PIN partilhado da equipa técnica</p>
+      {pinError && <p className="staff-error">PIN incorreto — tenta novamente</p>}
       <PinPad onComplete={handlePin} error={pinError} />
     </div>
   )

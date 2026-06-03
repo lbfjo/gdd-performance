@@ -10,7 +10,7 @@ export default function StepName({ onSelect }) {
   useEffect(() => {
     getAthletes()
       .then(setAthletes)
-      .catch(() => setError('Could not load athlete list. Check your connection.'))
+      .catch(() => setError('Não foi possível carregar a lista. Verifica a ligação.'))
       .finally(() => setLoading(false))
   }, [])
 
@@ -18,28 +18,46 @@ export default function StepName({ onSelect }) {
     a.name.toLowerCase().includes(search.toLowerCase())
   )
 
-  if (loading) return <p style={{ color: '#6b7280', textAlign: 'center', padding: 24 }}>Loading...</p>
-  if (error) return <p className="error-banner">{error}</p>
-
   return (
-    <>
-      <input
-        className="search-input"
-        placeholder="🔍 Search your name..."
-        value={search}
-        onChange={e => setSearch(e.target.value)}
-        autoComplete="off"
-      />
-      <div className="athlete-list">
-        {filtered.length === 0 && (
-          <p className="athlete-empty">No athlete found. Contact your coach.</p>
-        )}
-        {filtered.map(a => (
-          <button key={a.id} className="athlete-item" onClick={() => onSelect(a)}>
-            {a.name}
-          </button>
-        ))}
+    <div className="splash-content">
+      {/* Logo */}
+      <div className="gdd-logo-block">
+        <div className="gdd-logo-wordmark">GDD</div>
+        <div className="gdd-logo-sub">Performance</div>
+        <div className="gdd-tagline">Train. Register. Compete.</div>
+        <div className="gdd-divider" />
       </div>
-    </>
+
+      {/* Name search */}
+      <div className="name-section">
+        {loading && <p className="loading-state">A carregar atletas…</p>}
+        {error && <p className="error-banner">{error}</p>}
+
+        {!loading && !error && (
+          <>
+            <input
+              className="search-input"
+              placeholder="Pesquisa o teu nome…"
+              value={search}
+              onChange={e => setSearch(e.target.value)}
+              autoComplete="off"
+            />
+            <div className="athlete-list">
+              {filtered.length === 0 && search.length > 0 && (
+                <p className="athlete-empty">Atleta não encontrado. Contacta o teu treinador.</p>
+              )}
+              {filtered.length === 0 && search.length === 0 && (
+                <p className="athlete-empty">Começa a escrever o teu nome…</p>
+              )}
+              {filtered.map(a => (
+                <button key={a.id} className="athlete-item" onClick={() => onSelect(a)}>
+                  {a.name}
+                </button>
+              ))}
+            </div>
+          </>
+        )}
+      </div>
+    </div>
   )
 }

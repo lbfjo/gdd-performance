@@ -4,7 +4,7 @@ import { getLocalDate } from '../../lib/dates'
 
 export default function StepConfirm({ athlete, onReset }) {
   const [count, setCount] = useState(null)
-  const [seconds, setSeconds] = useState(5)
+  const [seconds, setSeconds] = useState(8)
 
   useEffect(() => {
     getSessionCountForAthleteThisWeek(athlete.id, getLocalDate())
@@ -21,21 +21,33 @@ export default function StepConfirm({ athlete, onReset }) {
   }, [onReset])
 
   const now = new Date()
-  const timeStr = now.toLocaleString('en-GB', {
-    weekday: 'long', day: 'numeric', month: 'short', year: 'numeric',
+  const timeStr = now.toLocaleString('pt-PT', {
+    weekday: 'long', day: 'numeric', month: 'long',
     hour: '2-digit', minute: '2-digit', timeZone: 'Europe/Lisbon'
   })
 
   return (
-    <div className="confirm-wrap">
-      <div className="confirm-icon">✅</div>
-      <p className="confirm-name">Checked in!</p>
-      <p style={{ color: '#9ca3af', fontSize: 15 }}>{athlete.name}</p>
+    <div className="confirm-screen">
+      <div className="confirm-ring">
+        <span className="confirm-checkmark">✓</span>
+      </div>
+
+      <h1 className="confirm-title">Check-in<br />Realizado!</h1>
+      <p className="confirm-athlete">{athlete.name}</p>
       <p className="confirm-time">{timeStr}</p>
+
       {count !== null && (
-        <div className="confirm-week">This week: {count} session{count !== 1 ? 's' : ''} ✓</div>
+        <div className="confirm-sessions">
+          Esta semana: {count} sessão{count !== 1 ? 'ões' : ''} ✓
+        </div>
       )}
-      <p className="confirm-reset">Resetting in {seconds}s…</p>
+
+      <div className="confirm-continue">
+        <button className="btn-primary" onClick={onReset}>
+          Continuar
+        </button>
+      </div>
+      <p className="confirm-reset">Reinicia automaticamente em {seconds}s</p>
     </div>
   )
 }

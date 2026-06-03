@@ -1,0 +1,94 @@
+;; ═══════════════════════════════════════════════════════════════
+;; Turn 2 — 2026-06-03 10:04:29
+;; ═══════════════════════════════════════════════════════════════
+
+;; User task:
+;;   ok add the spec
+
+;; ── 4 iteration(s) — 2 643 chars total ──
+
+;; ── iteration 1 ── 236 chars
+Let me read the current spec first to understand its structure and find the right place to add the athlete weekly check-in section.
+
+===MARKDOWN_ABOVE_ATOML_BELOW===
+(peek "docs/superpowers/specs/2026-06-03-offseason-checkin-design.md")
+
+;; ── iteration 2 ── 4 041 chars
+I have the full spec in view. I'll add three things based on our discussion:
+
+1. **Athlete weekly check-in feedback** — after check-in, show the athlete their weekly count and which days they attended.
+2. **The issues we identified** — added as a "Known Limitations & Future Improvements" section so they're tracked.
+
+```markdown ref=spec-update-confirmation
+3. **Confirmation** — success screen showing athlete name, timestamp, and weekly attendance summary. Auto-resets to step 1 after 5 seconds.
+   - Weekly summary shows: current count (e.g. "4 of 7 days"), and which days were attended (e.g. Mon · Tue · Wed · Today)
+   - Data sourced from the same `checkins` collection (athlete's check-ins filtered by current week)
+   - Read-only — no editing or history beyond current week
+```/spec-update-confirmation
+
+```markdown ref=spec-update-date
+### `checkins` collection
+```
+{
+  id: string,           // Firestore auto-ID
+  athleteId: string,    // reference to athletes doc
+  athleteName: string,  // denormalised for easy querying
+  date: string,         // "2026-06-03" (Europe/Lisbon date, for day-level queries)
+  timestamp: Timestamp  // Firestore server timestamp
+}
+```
+```/spec-update-date
+
+```markdown ref=spec-limitations
+---
+
+## Known Limitations & Future Improvements
+
+Items identified during design review — acceptable for POC, should be addressed before production:
+
+### Security
+- **PIN hashing:** SHA-256 on a 4-digit PIN (10,000 combinations) is trivially reversible via lookup table. Future: add a per-athlete random salt, or switch to bcrypt/argon2.
+- **No rate-limiting on PIN attempts:** brute-force of all 10,000 PINs is possible in seconds. Future: lockout after 5 failed attempts (30-second cooldown).
+- **Firestore Security Rules not defined:** rules must prevent direct read access to `pin` fields and enforce that only hashed values are written. Must be configured before deployment.
+
+### Data
+- **No composite indexes documented:** queries like "all check-ins for athlete X in week Y" need Firestore composite indexes on `athleteId` + `date`.
+- **Denormalised `athleteName` has no sync strategy:** if an athlete's name changes, historical check-in records retain the old name. Acceptable for POC.
+- **No data retention policy:** the `checkins` collection grows unbounded across off-seasons. Low priority for POC.
+
+### UX
+- **Timezone:** all date logic (current day, week boundaries) uses `Europe/Lisbon`. Week is defined as Monday–Sunday (ISO week).
+- **5-second auto-reset:** may be too short for athletes to read their weekly summary. Consider adding a "Done" button alongside the timer.
+- **Offline is a blank screen:** without caching the athlete list, the app is non-functional offline — not just "can't check in" but no UI at all. The error banner only helps if the list was previously loaded.
+
+### Free tier budget
+- **Firestore reads:** each dashboard load reads ~100 athlete docs + ~500 check-in docs (100 athletes × ~5 check-ins/week). 10 coaches refreshing a few times daily consumes ~10K–15K of the 50K daily read limit. Sufficient but not as generous as "more than sufficient" implies.
+```/spec-limitations
+
+===MARKDOWN_ABOVE_ATOML_BELOW===
+(write "docs/superpowers/specs/2026-06-03-offseason-checkin-design.md"
+  :replace "3. **Confirmation** — success screen showing athlete name, timestamp, and session count for the week. Auto-resets to step 1 after 5 seconds."
+  :with (ref "spec-update-confirmation"))
+(write "docs/superpowers/specs/2026-06-03-offseason-checkin-design.md"
+  :replace "### `checkins` collection\n```\n{\n  id: string,           // Firestore auto-ID\n  athleteId: string,    // reference to athletes doc\n  athleteName: string,  // denormalised for easy querying\n  timestamp: Timestamp  // Firestore server timestamp\n}\n```"
+  :with (ref "spec-update-date"))
+(write "docs/superpowers/specs/2026-06-03-offseason-checkin-design.md"
+  :replace "- Zero hosting cost for the foreseeable future"
+  :with "- Zero hosting cost for the foreseeable future\n\n(ref \"spec-limitations\")")
+
+;; ── iteration 3 ── 448 chars
+The first two writes landed correctly — the confirmation screen now shows weekly attendance, and the `checkins` collection has the new `date` field. But the third write inserted the literal text `(ref "spec-limitations")` instead of the actual content. Let me fix that.
+
+===MARKDOWN_ABOVE_ATOML_BELOW===
+(write "docs/superpowers/specs/2026-06-03-offseason-checkin-design.md"
+  :replace "(ref \"spec-limitations\")"
+  :with (ref "spec-limitations"))
+
+;; ── iteration 4 ── 748 chars
+All done. The spec now includes:
+
+1. **Athlete weekly check-in feedback** — the confirmation screen (step 3) shows the athlete's weekly attendance count and which days they attended (e.g. "4 of 7 days — Mon · Tue · Wed · Today").
+
+2. **`date` field on `checkins`** — added `date: string` (Europe/Lisbon, e.g. `"2026-06-03"`) for straightforward day-level queries instead of relying on timestamp range queries.
+
+3. **Known Limitations & Future Improvements** — new section at the bottom covering the issues we discussed: PIN hashing weakness, no rate-limiting, missing Firestore Security Rules, composite indexes, denormalised name sync, data retention, timezone/week definition, auto-reset timing, offline behaviour, and free tier budget estimates.

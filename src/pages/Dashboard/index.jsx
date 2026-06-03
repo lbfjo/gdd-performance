@@ -8,10 +8,10 @@ import TabAlerts from './TabAlerts'
 import './Dashboard.css'
 
 const TABS = [
-  { key: 'grid', label: 'Grid' },
-  { key: 'athlete', label: 'Per Athlete' },
-  { key: 'leaderboard', label: 'Leaderboard' },
-  { key: 'alerts', label: 'Alerts' },
+  { key: 'grid', label: 'Semana' },
+  { key: 'athlete', label: 'Atleta' },
+  { key: 'leaderboard', label: 'Ranking' },
+  { key: 'alerts', label: 'Alertas' },
 ]
 
 export default function Dashboard() {
@@ -30,8 +30,11 @@ export default function Dashboard() {
   return (
     <div className="dashboard-page">
       <div className="dashboard-header">
-        <h1>GDD Dashboard</h1>
-        <button className="dashboard-logout" onClick={logout}>Log out</button>
+        <div className="dashboard-brand">
+          <span className="dashboard-brand-name">GDD</span>
+          <span className="dashboard-brand-sub">Performance</span>
+        </div>
+        <button className="dashboard-logout" onClick={logout}>Sair</button>
       </div>
       <div className="dashboard-tabs">
         {TABS.map(t => (

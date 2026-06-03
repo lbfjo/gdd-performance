@@ -1,0 +1,30 @@
+;; ═══════════════════════════════════════════════════════════════
+;; Turn 1 — 2026-06-03 10:03:28
+;; ═══════════════════════════════════════════════════════════════
+
+;; User task:
+;;   should the user also see their weekly  check in ?
+
+;; ── 1 iteration(s) — 1 392 chars total ──
+
+;; ── iteration 1 ── 1 347 chars
+Yes — the athlete should see their own weekly check-in count after checking in. It's a natural feedback loop and costs almost nothing to add.
+
+**Why it matters:**
+
+- **Motivation.** Seeing "4/6 this week" reinforces the habit. Without it, the athlete taps a button and gets a generic "success" with no sense of progress.
+- **Self-correction.** If they think they already came 3 times but the app shows 2, they can flag it to the coach immediately — rather than discovering discrepancies on the leaderboard later.
+- **Reduces coach load.** Athletes stop asking "how many times did I come this week?" — they can see it themselves.
+
+**What I'd add to the spec:**
+
+After a successful check-in, the confirmation screen (the 5-second auto-reset one) should show:
+
+> **Check-in registered!**
+> This week: **4 of 6 days** (Mon · Tue · Wed · Today)
+
+- Show the count and which days they checked in (dots or abbreviated day names).
+- This data is already being queried for the coach's weekly grid — it's the same `checkins` collection filtered by athlete + current week. No new data model needed.
+- Keep it read-only on the athlete side — no editing, no history beyond current week.
+
+**Cost:** One additional Firestore query per check-in (athlete's check-ins for current week) — roughly 0–6 extra reads per check-in. Negligible against the free tier budget.

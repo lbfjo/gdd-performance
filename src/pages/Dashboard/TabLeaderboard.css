@@ -1,23 +1,55 @@
 .leaderboard-toggle {
-  display: flex; gap: 8px; margin-bottom: 16px;
+  display: flex; gap: 6px; margin-bottom: 20px;
 }
 .toggle-btn {
-  background: #1f2937; border: none; color: #6b7280;
-  padding: 8px 16px; border-radius: 8px; font-size: 13px; cursor: pointer;
+  background: var(--card2); border: 1px solid var(--border);
+  color: var(--muted);
+  padding: 8px 18px; border-radius: 4px;
+  font-family: 'Saira Condensed', sans-serif;
+  font-size: 13px; font-weight: 700;
+  letter-spacing: 0.08em; text-transform: uppercase;
+  cursor: pointer; transition: all 0.15s;
 }
-.toggle-btn.active { background: #2563eb; color: #fff; }
+.toggle-btn.active { background: var(--red); border-color: var(--red); color: var(--white); }
 
-.leaderboard-list { display: flex; flex-direction: column; gap: 8px; }
+.leaderboard-list { display: flex; flex-direction: column; gap: 6px; }
+
 .leaderboard-row {
-  display: flex; align-items: center; gap: 12px;
-  background: #1f2937; border-radius: 10px; padding: 12px 14px;
+  display: flex; align-items: center; gap: 14px;
+  background: var(--card); border: 1px solid var(--border);
+  border-radius: 4px; padding: 14px 16px;
+  transition: background 0.1s;
 }
-.leaderboard-row.zero { background: #1a1a1a; border: 1px solid #7f1d1d; }
-.lb-rank { font-size: 20px; width: 28px; text-align: center; }
-.lb-name { flex: 1; font-size: 14px; font-weight: 500; }
-.lb-name.zero { color: #f87171; }
+.leaderboard-row.zero {
+  background: rgba(200,16,46,0.04);
+  border-color: rgba(200,16,46,0.2);
+}
+
+.lb-rank {
+  font-family: 'Saira Condensed', sans-serif;
+  font-size: 18px; font-weight: 700;
+  width: 32px; text-align: center; flex-shrink: 0;
+  color: var(--muted);
+}
+.lb-rank-medal { font-size: 20px; }
+
+.lb-name {
+  flex: 1;
+  font-family: 'Inter', sans-serif;
+  font-size: 14px; font-weight: 500;
+  color: var(--white);
+}
+.lb-name.zero { color: #F87171; }
+
 .lb-count {
-  font-size: 13px; font-weight: 700; padding: 4px 10px;
-  border-radius: 6px; background: #166534; color: #4ade80;
+  font-family: 'Saira Condensed', sans-serif;
+  font-size: 14px; font-weight: 700;
+  letter-spacing: 0.04em;
+  padding: 4px 12px; border-radius: 4px;
+  background: var(--green-bg); color: var(--green);
+  border: 1px solid rgba(0,200,83,0.25);
 }
-.lb-count.zero { background: #7f1d1d; color: #f87171; }
+.lb-count.zero {
+  background: var(--red-bg); color: #F87171;
+  border-color: rgba(200,16,46,0.25);
+}
