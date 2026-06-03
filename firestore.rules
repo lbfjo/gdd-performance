@@ -1,0 +1,23 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    match /athletes/{id} {
+      allow read: if true;
+      allow write: if false;
+    }
+
+    match /checkins/{id} {
+      allow read: if true;
+      allow create: if request.resource.data.keys().hasAll(['athleteId','athleteName','date','timestamp'])
+                    && request.resource.data.athleteId is string
+                    && request.resource.data.date is string;
+      allow update, delete: if false;
+    }
+
+    match /config/{doc} {
+      allow read: if true;
+      allow write: if false;
+    }
+  }
+}
