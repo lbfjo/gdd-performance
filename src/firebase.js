@@ -10,5 +10,9 @@ const firebaseConfig = {
   appId: import.meta.env.VITE_FIREBASE_APP_ID,
 }
 
+if (!import.meta.env.VITE_FIREBASE_PROJECT_ID) {
+  throw new Error('Firebase env vars not set. Copy .env.local and fill in values.')
+}
+
 const app = initializeApp(firebaseConfig)
 export const db = getFirestore(app)
