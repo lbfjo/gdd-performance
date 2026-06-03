@@ -1,6 +1,6 @@
 import {
   collection, query, where, orderBy, getDocs,
-  addDoc, serverTimestamp
+  addDoc, serverTimestamp, getCountFromServer
 } from 'firebase/firestore'
 import { db } from '../firebase'
 import { getLocalDate, getWeekBounds, getPreviousWeekBounds } from '../lib/dates'
@@ -64,8 +64,8 @@ export async function getSessionCountForAthleteThisWeek(athleteId, dateStr) {
     where('date', '>=', start),
     where('date', '<=', end)
   )
-  const snap = await getDocs(q)
-  return snap.size
+  const snap = await getCountFromServer(q)
+  return snap.data().count
 }
 
 export async function getCheckinsForBothWeeks(dateStr) {
@@ -79,7 +79,7 @@ export async function getCheckinsForBothWeeks(dateStr) {
   )
   const snap = await getDocs(q)
   return {
-    all: snap.docs.map(d => d.data()),
+    all: snap.docs.map(d => ({ id: d.id, ...d.data() })),
     currStart: curr.start,
     currEnd: curr.end,
     prevStart: prev.start,

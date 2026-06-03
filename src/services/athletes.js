@@ -1,4 +1,4 @@
-import { collection, query, where, orderBy, getDocs } from 'firebase/firestore'
+import { collection, query, where, orderBy, getDocs, doc, getDoc } from 'firebase/firestore'
 import { db } from '../firebase'
 import { hashPin } from '../lib/hash'
 
@@ -13,7 +13,6 @@ export async function getAthletes() {
 }
 
 export async function verifyAthletePin(athleteId, pin) {
-  const { doc, getDoc } = await import('firebase/firestore')
   const snap = await getDoc(doc(db, 'athletes', athleteId))
   if (!snap.exists()) return false
   const stored = snap.data().pin
