@@ -1,0 +1,63 @@
+.checkin-page {
+  min-height: 100dvh; display: flex; flex-direction: column;
+  background: #111827; max-width: 480px; margin: 0 auto;
+}
+
+.checkin-header {
+  padding: 24px 20px 16px; text-align: center;
+  border-bottom: 1px solid #1f2937;
+}
+.checkin-logo {
+  width: 52px; height: 52px; background: #1f2937;
+  border-radius: 50%; margin: 0 auto 10px;
+  display: flex; align-items: center; justify-content: center; font-size: 24px;
+}
+.checkin-title { font-size: 18px; font-weight: 700; }
+.checkin-subtitle { font-size: 13px; color: #6b7280; margin-top: 2px; }
+
+.checkin-body { flex: 1; padding: 20px; display: flex; flex-direction: column; }
+
+.search-input {
+  width: 100%; background: #1f2937; border: none; border-radius: 10px;
+  padding: 12px 16px; font-size: 15px; color: #f9fafb;
+  outline: none; margin-bottom: 14px;
+}
+.search-input::placeholder { color: #6b7280; }
+
+.athlete-list { display: flex; flex-direction: column; gap: 6px; overflow-y: auto; }
+.athlete-item {
+  background: #1f2937; border: none; border-radius: 10px;
+  padding: 14px 16px; font-size: 15px; color: #f9fafb;
+  text-align: left; cursor: pointer; transition: background 0.1s;
+}
+.athlete-item:active { background: #374151; }
+.athlete-empty { color: #6b7280; font-size: 14px; text-align: center; padding: 20px 0; }
+
+.pin-subtitle { text-align: center; color: #6b7280; font-size: 14px; margin-bottom: 28px; }
+.pin-name { text-align: center; font-size: 20px; font-weight: 700; margin-bottom: 6px; }
+.pin-back {
+  background: none; border: none; color: #6b7280; font-size: 13px;
+  cursor: pointer; text-align: center; margin-top: 20px; padding: 8px;
+}
+
+.confirm-wrap {
+  flex: 1; display: flex; flex-direction: column;
+  align-items: center; justify-content: center; text-align: center; gap: 16px;
+}
+.confirm-icon {
+  width: 80px; height: 80px; background: #052e16;
+  border-radius: 50%; display: flex; align-items: center;
+  justify-content: center; font-size: 40px;
+}
+.confirm-name { font-size: 22px; font-weight: 700; }
+.confirm-time { font-size: 13px; color: #6b7280; }
+.confirm-week {
+  background: #052e16; border: 1px solid #166534; border-radius: 10px;
+  padding: 12px 20px; font-size: 13px; color: #4ade80;
+}
+.confirm-reset { font-size: 12px; color: #374151; margin-top: 8px; }
+
+.error-banner {
+  background: #7f1d1d; border-radius: 8px; padding: 12px 16px;
+  font-size: 14px; color: #fca5a5; text-align: center; margin-bottom: 12px;
+}

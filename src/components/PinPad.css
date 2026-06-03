@@ -1,0 +1,31 @@
+.pinpad { display: flex; flex-direction: column; align-items: center; gap: 24px; width: 100%; }
+
+.pinpad-dots { display: flex; gap: 16px; }
+.pinpad-dot {
+  width: 16px; height: 16px; border-radius: 50%;
+  background: #374151; transition: background 0.15s;
+}
+.pinpad-dot.filled { background: #2563eb; }
+.pinpad-dot.error { background: #ef4444; }
+
+.pinpad-grid {
+  display: grid; grid-template-columns: repeat(3, 1fr);
+  gap: 10px; width: 100%; max-width: 280px;
+}
+
+.pinpad-key {
+  background: #1f2937; border: none; border-radius: 10px;
+  padding: 18px; font-size: 22px; font-weight: 600;
+  color: #f9fafb; cursor: pointer; user-select: none;
+  transition: background 0.1s; -webkit-tap-highlight-color: transparent;
+}
+.pinpad-key:active { background: #374151; }
+.pinpad-key.backspace { font-size: 16px; color: #9ca3af; background: #374151; }
+.pinpad-key.empty { background: transparent; pointer-events: none; }
+
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  20%, 60% { transform: translateX(-8px); }
+  40%, 80% { transform: translateX(8px); }
+}
+.pinpad-dots.shake { animation: shake 0.4s ease; }
