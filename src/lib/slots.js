@@ -33,6 +33,7 @@ export function getActiveSlot(now = new Date()) {
 }
 
 export function isSlotBookable(slotKey, dateStr, now = new Date()) {
+  if (!SLOTS[slotKey]) return false
   if (!isWeekday(dateStr)) return false
   const todayStr = now.toLocaleDateString('sv-SE', { timeZone: TZ })
   if (dateStr < todayStr) return false

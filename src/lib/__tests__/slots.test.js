@@ -47,6 +47,9 @@ describe('isSlotBookable', () => {
   it('returns true for any slot on future weekday', () => {
     expect(isSlotBookable('morning', '2026-06-04', new Date('2026-06-03T23:00:00Z'))).toBe(true)
   })
+  it('returns false for unknown slot key', () => {
+    expect(isSlotBookable('unknown', '2026-06-03', new Date('2026-06-03T08:00:00Z'))).toBe(false)
+  })
 })
 
 describe('SLOTS and SLOT_ORDER', () => {
