@@ -4,7 +4,12 @@ service cloud.firestore {
 
     match /athletes/{id} {
       allow read: if true;
-      allow write: if false;
+      allow create: if request.resource.data.keys().hasAll(['name','pin','active'])
+                    && request.resource.data.name is string
+                    && request.resource.data.pin is string
+                    && request.resource.data.active is bool;
+      allow update: if request.resource.data.name is string;
+      allow delete: if false;
     }
 
     match /checkins/{id} {
@@ -17,7 +22,8 @@ service cloud.firestore {
 
     match /config/{doc} {
       allow read: if true;
-      allow write: if false;
+      allow write: if request.resource.data.keys().hasOnly(['staffPin','weeklyTarget'])
+                   && request.resource.data.staffPin is string;
     }
   }
 }
