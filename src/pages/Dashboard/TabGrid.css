@@ -1,0 +1,34 @@
+.grid-controls {
+  display: flex; align-items: center; justify-content: space-between;
+  margin-bottom: 16px;
+}
+.grid-week-label { font-size: 14px; font-weight: 600; }
+.grid-nav {
+  background: #1f2937; border: none; color: #f9fafb;
+  padding: 6px 14px; border-radius: 8px; font-size: 18px; cursor: pointer;
+}
+.grid-nav:disabled { opacity: 0.3; cursor: default; }
+
+.grid-table { width: 100%; border-collapse: collapse; }
+.grid-table th {
+  font-size: 11px; color: #6b7280; font-weight: 500;
+  padding: 4px 2px; text-align: center;
+}
+.grid-table th.today { color: #2563eb; font-weight: 700; }
+.grid-table td { padding: 3px 2px; }
+.grid-name {
+  font-size: 12px; color: #d1d5db; white-space: nowrap;
+  overflow: hidden; text-overflow: ellipsis; max-width: 90px;
+  padding-right: 6px;
+}
+.grid-cell {
+  width: 28px; height: 22px; border-radius: 4px;
+  background: #1f2937;
+}
+.grid-cell.checked { background: #16a34a; }
+
+.grid-legend {
+  display: flex; gap: 16px; margin-top: 12px; justify-content: flex-end;
+}
+.legend-item { display: flex; align-items: center; gap: 5px; font-size: 11px; color: #9ca3af; }
+.legend-dot { width: 12px; height: 12px; border-radius: 3px; }

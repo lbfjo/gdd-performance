@@ -1,0 +1,15 @@
+.alerts-summary {
+  font-size: 13px; color: #f87171; margin-bottom: 14px;
+}
+.alert-list { display: flex; flex-direction: column; gap: 8px; }
+.alert-card {
+  border-radius: 10px; padding: 12px 14px;
+  border: 1px solid;
+}
+.alert-card.critical { background: #1a1a1a; border-color: #7f1d1d; }
+.alert-card.warning  { background: #1a1a1a; border-color: #92400e; }
+.alert-name { font-size: 14px; font-weight: 600; }
+.alert-name.critical { color: #f87171; }
+.alert-name.warning  { color: #fbbf24; }
+.alert-detail { font-size: 12px; color: #9ca3af; margin-top: 3px; }
+.alerts-empty { color: #6b7280; text-align: center; padding: 40px 0; font-size: 14px; }
