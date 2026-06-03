@@ -38,10 +38,10 @@ export default function TabLeaderboard() {
   return (
     <>
       <div className="leaderboard-toggle">
-        <button className={`toggle-btn${mode === 'week' ? ' active' : ''}`} onClick={() => setMode('week')}>This Week</button>
-        <button className={`toggle-btn${mode === 'alltime' ? ' active' : ''}`} onClick={() => setMode('alltime')}>All Time</button>
+        <button className={`toggle-btn${mode === 'week' ? ' active' : ''}`} onClick={() => setMode('week')}>Esta semana</button>
+        <button className={`toggle-btn${mode === 'alltime' ? ' active' : ''}`} onClick={() => setMode('alltime')}>Total</button>
       </div>
-      {loading ? <p className="loading-state">Loading...</p> : (
+      {loading ? <p className="loading-state">A carregar…</p> : (
         <div className="leaderboard-list">
           {rows.map((r, i) => (
             <div key={r.id} className={`leaderboard-row${r.count === 0 ? ' zero' : ''}`}>

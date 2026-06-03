@@ -45,7 +45,9 @@ export default function TabGrid() {
     <>
       <div className="grid-controls">
         <button className="grid-nav" onClick={() => setWeekStart(s => getPreviousWeekBounds(s).start)}>‹</button>
-        <span className="grid-week-label">{formatDay(days[0])} {days[0].slice(5)} — {formatDay(days[6])} {days[6].slice(5)}</span>
+        <span className="grid-week-label">
+          {new Date(days[0]+'T12:00:00').toLocaleDateString('pt-PT',{day:'numeric',month:'short'})} — {new Date(days[6]+'T12:00:00').toLocaleDateString('pt-PT',{day:'numeric',month:'short'})}
+        </span>
         <button className="grid-nav" disabled={isCurrentWeek} onClick={() => {
           const next = new Date(weekStart + 'T12:00:00')
           next.setDate(next.getDate() + 7)
@@ -54,7 +56,7 @@ export default function TabGrid() {
       </div>
 
       {loading ? (
-        <p className="loading-state">Loading...</p>
+        <p className="loading-state">A carregar…</p>
       ) : (
         <div style={{ overflowX: 'auto' }}>
           <table className="grid-table">
@@ -63,7 +65,7 @@ export default function TabGrid() {
                 <th />
                 {days.map(d => (
                   <th key={d} className={d === today ? 'today' : ''}>
-                    {formatDay(d).slice(0, 1)}
+                    {new Date(d+'T12:00:00').toLocaleDateString('pt-PT',{weekday:'short'}).slice(0,1).toUpperCase()}
                   </th>
                 ))}
               </tr>
@@ -85,8 +87,8 @@ export default function TabGrid() {
       )}
 
       <div className="grid-legend">
-        <div className="legend-item"><div className="legend-dot" style={{ background: '#16a34a' }} /> Checked in</div>
-        <div className="legend-item"><div className="legend-dot" style={{ background: '#1f2937', border: '1px solid #374151' }} /> Absent</div>
+        <div className="legend-item"><div className="legend-dot" style={{ background: 'var(--green)' }} /> Check-in</div>
+        <div className="legend-item"><div className="legend-dot" style={{ background: 'var(--card2)', border: '1px solid var(--border)' }} /> Ausente</div>
       </div>
     </>
   )
