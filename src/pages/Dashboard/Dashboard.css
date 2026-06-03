@@ -105,3 +105,66 @@
   margin-bottom: 14px;
   letter-spacing: 0.04em;
 }
+
+/* ── Dashboard booking tab ── */
+.db-booking-strip {
+  display: flex; gap: 6px; margin-bottom: 20px; overflow-x: auto;
+  scrollbar-width: none;
+}
+.db-booking-strip::-webkit-scrollbar { display: none; }
+.db-day-btn {
+  display: flex; flex-direction: column; align-items: center;
+  min-width: 52px; padding: 8px 6px; border-radius: 4px;
+  background: var(--card2); border: 1px solid var(--border);
+  cursor: pointer; transition: all 0.15s;
+}
+.db-day-btn.active { background: var(--red); border-color: var(--red); }
+.db-day-btn.past { opacity: 0.5; }
+.db-day-name {
+  font-family: 'Saira Condensed', sans-serif;
+  font-size: 10px; font-weight: 700;
+  letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted);
+}
+.db-day-btn.active .db-day-name { color: rgba(255,255,255,0.8); }
+.db-day-num {
+  font-family: 'Saira Condensed', sans-serif;
+  font-size: 18px; font-weight: 700; color: var(--white); line-height: 1.1;
+}
+.db-slot-section {
+  background: var(--card); border: 1px solid var(--border);
+  border-radius: 4px; margin-bottom: 10px; overflow: hidden;
+}
+.db-slot-header {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 12px 16px; cursor: pointer; user-select: none;
+}
+.db-slot-name {
+  font-family: 'Saira Condensed', sans-serif;
+  font-size: 15px; font-weight: 700;
+  text-transform: uppercase; letter-spacing: 0.04em; color: var(--white);
+}
+.db-slot-time { font-family: 'Inter', sans-serif; font-size: 12px; color: var(--muted); }
+.db-slot-count {
+  font-family: 'Saira Condensed', sans-serif;
+  font-size: 13px; color: var(--muted); letter-spacing: 0.04em;
+}
+.db-athlete-list { border-top: 1px solid var(--border); }
+.db-athlete-row {
+  display: flex; align-items: center; gap: 10px;
+  padding: 9px 16px; border-bottom: 1px solid var(--border);
+}
+.db-athlete-row:last-child { border-bottom: none; }
+.db-athlete-dot { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; }
+.db-athlete-dot.checked { background: var(--green); }
+.db-athlete-dot.pending { background: var(--muted); opacity: 0.5; }
+.db-athlete-name {
+  flex: 1; font-family: 'Inter', sans-serif;
+  font-size: 13px; font-weight: 500; color: var(--white);
+}
+.db-checkin-badge {
+  font-family: 'Saira Condensed', sans-serif;
+  font-size: 11px; font-weight: 700;
+  letter-spacing: 0.06em; text-transform: uppercase;
+}
+.db-checkin-badge.done { color: var(--green); }
+.db-checkin-badge.pending { color: var(--muted); }

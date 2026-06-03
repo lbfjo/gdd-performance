@@ -5,6 +5,7 @@ import TabGrid from './TabGrid'
 import TabAthlete from './TabAthlete'
 import TabLeaderboard from './TabLeaderboard'
 import TabAlerts from './TabAlerts'
+import TabBookings from './TabBookings'
 import './Dashboard.css'
 
 const TABS = [
@@ -12,6 +13,7 @@ const TABS = [
   { key: 'athlete', label: 'Atleta' },
   { key: 'leaderboard', label: 'Ranking' },
   { key: 'alerts', label: 'Alertas' },
+  { key: 'bookings', label: 'Reservas' },
 ]
 
 export default function Dashboard() {
@@ -52,6 +54,7 @@ export default function Dashboard() {
         {activeTab === 'athlete' && <TabAthlete />}
         {activeTab === 'leaderboard' && <TabLeaderboard />}
         {activeTab === 'alerts' && <TabAlerts />}
+        {activeTab === 'bookings' && <TabBookings />}
       </div>
     </div>
   )
