@@ -1,7 +1,9 @@
 import { useState, useEffect } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { getAthletes } from '../../services/athletes'
 
 export default function StepName({ onSelect }) {
+  const navigate = useNavigate()
   const [athletes, setAthletes] = useState([])
   const [search, setSearch] = useState('')
   const [loading, setLoading] = useState(true)
@@ -55,6 +57,13 @@ export default function StepName({ onSelect }) {
                 </button>
               ))}
             </div>
+          <button
+              className="btn-secondary"
+              style={{ marginTop: 8 }}
+              onClick={() => navigate('/athlete')}
+            >
+              Área do Atleta →
+            </button>
           </>
         )}
       </div>
