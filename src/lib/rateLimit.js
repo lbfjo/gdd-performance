@@ -29,8 +29,8 @@ export function isLockedOut(athleteId) {
 export function getRemainingSeconds(athleteId) {
   const attempts = recentAttempts(athleteId)
   if (attempts.length < MAX_ATTEMPTS) return 0
-  const oldest = Math.min(...attempts)
-  return Math.ceil((LOCKOUT_MS - (Date.now() - oldest)) / 1000)
+  const newest = Math.max(...attempts)
+  return Math.ceil((LOCKOUT_MS - (Date.now() - newest)) / 1000)
 }
 
 export function clearAttempts(athleteId) {

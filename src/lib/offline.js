@@ -1,4 +1,5 @@
 const KEY = 'gdd_offline_queue'
+let _seq = 0
 
 export function getPendingQueue() {
   try { return JSON.parse(localStorage.getItem(KEY)) || [] }
@@ -11,7 +12,7 @@ function saveQueue(q) {
 
 export function enqueueCheckin(item) {
   const q = getPendingQueue()
-  q.push({ ...item, id: `${Date.now()}-${Math.random().toString(36).slice(2)}` })
+  q.push({ ...item, id: `${Date.now()}-${++_seq}` })
   saveQueue(q)
 }
 
