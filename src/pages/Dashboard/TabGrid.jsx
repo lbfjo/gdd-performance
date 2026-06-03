@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from 'react'
-import { getCheckinsForWeek } from '../../services/checkins'
+import { getCheckinsForWeek, getAllCheckinsForExport } from '../../services/checkins'
 import { getAthletes } from '../../services/athletes'
 import { getLocalDate, getWeekBounds, formatDay, getPreviousWeekBounds } from '../../lib/dates'
 import './TabGrid.css'
@@ -17,7 +17,26 @@ export default function TabGrid() {
   const [checkinsByAthlete, setCheckinsByAthlete] = useState({})
   const [weekStart, setWeekStart] = useState(() => getWeekBounds(getLocalDate()).start)
   const [loading, setLoading] = useState(true)
+  const [exporting, setExporting] = useState(false)
   const today = getLocalDate()
+
+  async function handleExport() {
+    setExporting(true)
+    try {
+      const rows = await getAllCheckinsForExport()
+      const header = 'Atleta,Data,Semana\n'
+      const csv = header + rows.map(r => `"${r.athlete}",${r.date},${r.week}`).join('\n')
+      const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' })
+      const url = URL.createObjectURL(blob)
+      const a = document.createElement('a')
+      a.href = url
+      a.download = `gdd-checkins-${getLocalDate()}.csv`
+      a.click()
+      URL.revokeObjectURL(url)
+    } finally {
+      setExporting(false)
+    }
+  }
 
   const load = useCallback(async (start) => {
     setLoading(true)
@@ -90,6 +109,10 @@ export default function TabGrid() {
         <div className="legend-item"><div className="legend-dot" style={{ background: 'var(--green)' }} /> Check-in</div>
         <div className="legend-item"><div className="legend-dot" style={{ background: 'var(--card2)', border: '1px solid var(--border)' }} /> Ausente</div>
       </div>
+
+      <button className="grid-export-btn" onClick={handleExport} disabled={exporting}>
+        {exporting ? 'A exportar…' : '↓ Exportar CSV'}
+      </button>
     </>
   )
 }

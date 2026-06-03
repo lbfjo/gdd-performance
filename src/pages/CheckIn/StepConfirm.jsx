@@ -1,14 +1,19 @@
 import { useEffect, useState } from 'react'
 import { getSessionCountForAthleteThisWeek } from '../../services/checkins'
+import { getConfig } from '../../services/config'
 import { getLocalDate } from '../../lib/dates'
 
 export default function StepConfirm({ athlete, onReset }) {
-  const [count, setCount] = useState(null)
-  const [seconds, setSeconds] = useState(8)
+  const [count, setCount]               = useState(null)
+  const [weeklyTarget, setWeeklyTarget] = useState(null)
+  const [seconds, setSeconds]           = useState(8)
 
   useEffect(() => {
-    getSessionCountForAthleteThisWeek(athlete.id, getLocalDate())
-      .then(setCount)
+    Promise.all([
+      getSessionCountForAthleteThisWeek(athlete.id, getLocalDate()),
+      getConfig(),
+    ])
+      .then(([c, cfg]) => { setCount(c); setWeeklyTarget(cfg.weeklyTarget) })
       .catch(() => {})
   }, [athlete.id])
 
@@ -20,8 +25,7 @@ export default function StepConfirm({ athlete, onReset }) {
     return () => clearInterval(t)
   }, [onReset])
 
-  const now = new Date()
-  const timeStr = now.toLocaleString('pt-PT', {
+  const timeStr = new Date().toLocaleString('pt-PT', {
     weekday: 'long', day: 'numeric', month: 'long',
     hour: '2-digit', minute: '2-digit', timeZone: 'Europe/Lisbon'
   })
@@ -31,21 +35,18 @@ export default function StepConfirm({ athlete, onReset }) {
       <div className="confirm-ring">
         <span className="confirm-checkmark">✓</span>
       </div>
-
       <h1 className="confirm-title">Check-in<br />Realizado!</h1>
       <p className="confirm-athlete">{athlete.name}</p>
       <p className="confirm-time">{timeStr}</p>
-
       {count !== null && (
         <div className="confirm-sessions">
-          Esta semana: {count} sessão{count !== 1 ? 'ões' : ''} ✓
+          {weeklyTarget
+            ? `Esta semana: ${count}/${weeklyTarget} sessões`
+            : `Esta semana: ${count} sessão${count !== 1 ? 'ões' : ''} ✓`}
         </div>
       )}
-
       <div className="confirm-continue">
-        <button className="btn-primary" onClick={onReset}>
-          Continuar
-        </button>
+        <button className="btn-primary" onClick={onReset}>Continuar</button>
       </div>
       <p className="confirm-reset">Reinicia automaticamente em {seconds}s</p>
     </div>

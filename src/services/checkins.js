@@ -86,3 +86,19 @@ export async function getCheckinsForBothWeeks(dateStr) {
     prevEnd: prev.end,
   }
 }
+
+export async function getAllCheckinsForExport() {
+  const q = query(
+    collection(db, 'checkins'),
+    orderBy('date', 'desc')
+  )
+  const snap = await getDocs(q)
+  return snap.docs.map(d => {
+    const data = d.data()
+    return {
+      athlete: data.athleteName,
+      date: data.date,
+      week: getWeekBounds(data.date).start,
+    }
+  })
+}
