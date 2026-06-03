@@ -17,8 +17,8 @@ export async function getConfig() {
 }
 
 export async function setWeeklyTarget(target) {
-  const snap = await getDoc(doc(db, 'config', 'app'))
-  if (!snap.exists()) return
-  const current = snap.data()
-  await setDoc(doc(db, 'config', 'app'), { ...current, weeklyTarget: target })
+  const ref = doc(db, 'config', 'app')
+  const snap = await getDoc(ref)
+  if (!snap.exists()) throw new Error('Config doc not initialised — set staffPin first')
+  await setDoc(ref, { ...snap.data(), weeklyTarget: target })
 }

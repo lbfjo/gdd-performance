@@ -14,7 +14,10 @@ export async function getAthletes() {
 export async function getAllAthletes() {
   const q = query(collection(db, 'athletes'), orderBy('name'))
   const snap = await getDocs(q)
-  return snap.docs.map(d => ({ id: d.id, ...d.data(), pin: undefined }))
+  return snap.docs.map(d => {
+    const { pin: _, ...rest } = d.data()
+    return { id: d.id, ...rest }
+  })
 }
 
 export async function verifyAthletePin(athleteId, pin) {
