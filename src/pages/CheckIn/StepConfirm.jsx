@@ -1,19 +1,32 @@
 import { useEffect, useState } from 'react'
 import { getSessionCountForAthleteThisWeek } from '../../services/checkins'
+import { getBookingsForAthleteOnDate } from '../../services/bookings'
 import { getConfig } from '../../services/config'
 import { getLocalDate } from '../../lib/dates'
+import { getActiveSlot, SLOTS } from '../../lib/slots'
 
 export default function StepConfirm({ athlete, onReset }) {
   const [count, setCount]               = useState(null)
   const [weeklyTarget, setWeeklyTarget] = useState(null)
+  const [bookedSlot, setBookedSlot]     = useState(null)
   const [seconds, setSeconds]           = useState(8)
 
   useEffect(() => {
+    const today = getLocalDate()
+    const activeSlot = getActiveSlot()
+
     Promise.all([
-      getSessionCountForAthleteThisWeek(athlete.id, getLocalDate()),
+      getSessionCountForAthleteThisWeek(athlete.id, today),
       getConfig(),
+      activeSlot ? getBookingsForAthleteOnDate(athlete.id, today) : Promise.resolve([]),
     ])
-      .then(([c, cfg]) => { setCount(c); setWeeklyTarget(cfg.weeklyTarget) })
+      .then(([c, cfg, bookings]) => {
+        setCount(c)
+        setWeeklyTarget(cfg.weeklyTarget)
+        if (activeSlot && bookings.some(b => b.slot === activeSlot)) {
+          setBookedSlot(activeSlot)
+        }
+      })
       .catch(() => {})
   }, [athlete.id])
 
@@ -38,6 +51,7 @@ export default function StepConfirm({ athlete, onReset }) {
       <h1 className="confirm-title">Check-in<br />Realizado!</h1>
       <p className="confirm-athlete">{athlete.name}</p>
       <p className="confirm-time">{timeStr}</p>
+
       {count !== null && (
         <div className="confirm-sessions">
           {weeklyTarget
@@ -45,6 +59,18 @@ export default function StepConfirm({ athlete, onReset }) {
             : `Esta semana: ${count} sessão${count !== 1 ? 'ões' : ''} ✓`}
         </div>
       )}
+
+      {bookedSlot && (
+        <div style={{
+          background: 'var(--green-bg)', border: '1px solid rgba(0,200,83,0.2)',
+          borderRadius: 4, padding: '10px 20px', marginTop: -8,
+          fontFamily: 'Saira Condensed, sans-serif', fontSize: 13, fontWeight: 700,
+          letterSpacing: '0.06em', textTransform: 'uppercase', color: 'var(--green)',
+        }}>
+          Sessão reservada ✓ — {SLOTS[bookedSlot].label}
+        </div>
+      )}
+
       <div className="confirm-continue">
         <button className="btn-primary" onClick={onReset}>Continuar</button>
       </div>
