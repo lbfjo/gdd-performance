@@ -4,6 +4,7 @@ import AthleteLogin from './AthleteLogin'
 import TabHome from './TabHome'
 import TabHistory from './TabHistory'
 import TabRanking from './TabRanking'
+import TabBookings from './TabBookings'
 import './Athlete.css'
 
 export const ATHLETE_KEY = 'gdd_athlete'
@@ -32,6 +33,15 @@ const TABS = [
     icon: (
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" xmlns="http://www.w3.org/2000/svg">
         <path d="M18 20V10M12 20V4M6 20v-6" strokeLinecap="round" strokeLinejoin="round" />
+      </svg>
+    ),
+  },
+  {
+    key: 'bookings', label: 'Reservas',
+    icon: (
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" xmlns="http://www.w3.org/2000/svg">
+        <rect x="3" y="4" width="18" height="18" rx="2" strokeLinecap="round" strokeLinejoin="round"/>
+        <path d="M16 2v4M8 2v4M3 10h18M9 16l2 2 4-4" strokeLinecap="round" strokeLinejoin="round"/>
       </svg>
     ),
   },
@@ -67,9 +77,10 @@ export default function Athlete() {
       </div>
 
       <div className="athlete-content">
-        {activeTab === 'home'    && <TabHome    athlete={athlete} />}
-        {activeTab === 'history' && <TabHistory athlete={athlete} />}
-        {activeTab === 'ranking' && <TabRanking athlete={athlete} />}
+        {activeTab === 'home'     && <TabHome     athlete={athlete} />}
+        {activeTab === 'history'  && <TabHistory  athlete={athlete} />}
+        {activeTab === 'ranking'  && <TabRanking  athlete={athlete} />}
+        {activeTab === 'bookings' && <TabBookings athlete={athlete} />}
       </div>
 
       <nav className="athlete-tabs">
