@@ -6,7 +6,7 @@ const PT_MONTHS = [
   'Janeiro','Fevereiro','Março','Abril','Maio','Junho',
   'Julho','Agosto','Setembro','Outubro','Novembro','Dezembro',
 ]
-const PT_WEEKDAYS = ['Seg','Ter','Qua','Qui','Sex','Sáb','Dom']
+const PT_WEEKDAYS_SHORT = ['Seg','Ter','Qua','Qui','Sex','Sáb','Dom']
 
 function getCalendarDays(year, month) {
   const firstDow = new Date(year, month, 1).getDay() // 0=Sun
@@ -19,6 +19,55 @@ function getCalendarDays(year, month) {
 
 function toDateStr(year, month, day) {
   return `${year}-${String(month + 1).padStart(2,'0')}-${String(day).padStart(2,'0')}`
+}
+
+// ---------- Month heatmap (current month only, no navigation) ----------
+function MonthHeatmap({ checkins, today }) {
+  const now   = new Date()
+  const year  = now.getFullYear()
+  const month = now.getMonth()
+  const cells = getCalendarDays(year, month)
+
+  const checkinDates = new Set(checkins.map(c => c.date))
+  const monthLabel   = `${PT_MONTHS[month]} ${year}`.toUpperCase()
+
+  return (
+    <div className="heatmap-wrap">
+      <p className="heatmap-month-label">{monthLabel}</p>
+      <div className="heatmap-grid">
+        {PT_WEEKDAYS_SHORT.map(d => (
+          <div key={d} className="heatmap-weekday">{d}</div>
+        ))}
+        {cells.map((day, i) => {
+          if (!day) return <div key={`e${i}`} />
+
+          const dateStr   = toDateStr(year, month, day)
+          const checked   = checkinDates.has(dateStr)
+          const isToday   = dateStr === today
+          const isFuture  = dateStr > today
+
+          // Day-of-week: 0=Mon…6=Sun (after Monday-first adjustment)
+          const rawDow = new Date(dateStr + 'T12:00:00').getDay()
+          const dow    = rawDow === 0 ? 6 : rawDow - 1
+          const isWeekend = dow >= 5
+
+          let cellClass = 'heatmap-cell'
+          if (checked)      cellClass += ' heatmap-checked'
+          else if (isFuture) cellClass += ' heatmap-future'
+          else if (isWeekend) cellClass += ' heatmap-weekend'
+          else              cellClass += ' heatmap-past'
+          if (isToday)      cellClass += ' heatmap-today'
+
+          return (
+            <div key={dateStr} className={cellClass}>
+              <span className="heatmap-day-num">{day}</span>
+              {checked && <span className="heatmap-dot" />}
+            </div>
+          )
+        })}
+      </div>
+    </div>
+  )
 }
 
 export default function TabHistory({ athlete }) {
@@ -61,6 +110,11 @@ export default function TabHistory({ athlete }) {
 
   return (
     <>
+      {/* ── Heatmap for current month ── */}
+      <MonthHeatmap checkins={checkins} today={today} />
+
+      {/* ── Navigable calendar ── */}
+
       {/* Calendar header */}
       <div className="cal-header">
         <button className="cal-nav" onClick={prevMonth}>‹</button>
@@ -71,7 +125,7 @@ export default function TabHistory({ athlete }) {
 
       {/* Calendar grid */}
       <div className="cal-grid">
-        {PT_WEEKDAYS.map(d => (
+        {PT_WEEKDAYS_SHORT.map(d => (
           <div key={d} className="cal-weekday">{d}</div>
         ))}
         {calDays.map((day, i) => {

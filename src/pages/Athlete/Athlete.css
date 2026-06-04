@@ -132,6 +132,32 @@
   font-size: 14px; font-weight: 500; color: var(--white);
 }
 
+/* ── Circular progress ring ── */
+.home-weekly-ring-wrap {
+  display: flex; flex-direction: column;
+  align-items: center; margin-bottom: 16px;
+}
+.progress-ring-arc {
+  transition: stroke-dashoffset 0.6s ease, stroke 0.4s ease;
+}
+
+/* ── Motivational banner ── */
+.home-banner {
+  border-radius: 4px; padding: 10px 14px; margin-bottom: 16px;
+  font-family: 'Inter', sans-serif; font-size: 13px; font-weight: 500;
+  text-align: center; letter-spacing: 0.01em;
+}
+.home-banner-amber {
+  background: var(--amber-bg);
+  border: 1px solid rgba(245,158,11,0.3);
+  color: var(--amber);
+}
+.home-banner-green {
+  background: var(--green-bg);
+  border: 1px solid rgba(0,200,83,0.25);
+  color: var(--green);
+}
+
 .home-checkin-btn {
   margin-bottom: 12px;
 }
@@ -195,6 +221,64 @@
 .cal-day.today-marker.checked {
   background: var(--green); border-color: var(--green);
   color: var(--dark);
+}
+
+/* ── Month heatmap ── */
+.heatmap-wrap {
+  margin-bottom: 24px;
+  background: var(--card); border: 1px solid var(--border);
+  border-radius: 4px; padding: 14px 12px;
+}
+.heatmap-month-label {
+  font-family: 'Saira Condensed', sans-serif;
+  font-size: 14px; font-weight: 700;
+  letter-spacing: 0.08em; text-transform: uppercase;
+  color: var(--white); margin-bottom: 10px;
+}
+.heatmap-grid {
+  display: grid; grid-template-columns: repeat(7, 1fr);
+  gap: 3px;
+}
+.heatmap-weekday {
+  font-family: 'Saira Condensed', sans-serif;
+  font-size: 10px; font-weight: 700;
+  letter-spacing: 0.08em; text-transform: uppercase;
+  color: var(--muted); text-align: center; padding: 2px 0 6px;
+}
+.heatmap-cell {
+  aspect-ratio: 1;
+  border-radius: 3px;
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  position: relative; gap: 1px;
+}
+.heatmap-day-num {
+  font-family: 'Inter', sans-serif;
+  font-size: 11px; font-weight: 400;
+  line-height: 1; color: var(--muted);
+}
+/* Past weekday without check-in */
+.heatmap-past  { background: var(--card2); }
+.heatmap-past .heatmap-day-num { color: rgba(255,255,255,0.35); }
+/* Weekend without check-in */
+.heatmap-weekend { background: rgba(26,32,48,0.6); }
+.heatmap-weekend .heatmap-day-num { color: rgba(255,255,255,0.2); }
+/* Future day */
+.heatmap-future { background: rgba(26,32,48,0.15); }
+.heatmap-future .heatmap-day-num { color: rgba(255,255,255,0.12); }
+/* Checked day */
+.heatmap-checked {
+  background: rgba(200,16,46,0.8);
+}
+.heatmap-checked .heatmap-day-num { color: var(--white); font-weight: 600; }
+/* Today border */
+.heatmap-today { outline: 1.5px solid var(--red); outline-offset: -1px; }
+.heatmap-checked.heatmap-today { outline-color: rgba(255,255,255,0.5); }
+/* White dot for checked days */
+.heatmap-dot {
+  display: block; width: 4px; height: 4px; border-radius: 50%;
+  background: rgba(255,255,255,0.9);
+  flex-shrink: 0;
 }
 
 .history-section-title {
