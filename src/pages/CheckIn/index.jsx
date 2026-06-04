@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import StepName from './StepName'
 import StepPin from './StepPin'
+import StepCheckIn from './StepCheckIn'
 import StepConfirm from './StepConfirm'
 import { addCheckin } from '../../services/checkins'
 import { ATHLETE_KEY } from '../Athlete'
@@ -11,11 +12,16 @@ export default function CheckIn() {
   const navigate = useNavigate()
   const [step, setStep] = useState('name')
   const [athlete, setAthlete] = useState(null)
+  const [submitting, setSubmitting] = useState(false)
 
   function handleSelectAthlete(a) { setAthlete(a); setStep('pin') }
 
-  async function handlePinSuccess() {
+  function handlePinSuccess() { setStep('checkin') }
+
+  async function handleConfirmCheckin() {
+    setSubmitting(true)
     await addCheckin(athlete.id, athlete.name).catch(() => {})
+    setSubmitting(false)
     setStep('confirm')
   }
 
@@ -41,6 +47,14 @@ export default function CheckIn() {
           onSuccess={handlePinSuccess}
           onAlreadyCheckedIn={handleAlreadyCheckedIn}
           onBack={() => { setAthlete(null); setStep('name') }}
+        />
+      )}
+      {step === 'checkin' && athlete && (
+        <StepCheckIn
+          athlete={athlete}
+          onConfirm={handleConfirmCheckin}
+          onBack={() => { setAthlete(null); setStep('name') }}
+          loading={submitting}
         />
       )}
       {step === 'confirm' && athlete && <StepConfirm athlete={athlete} onReset={handleReset} />}

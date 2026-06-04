@@ -1,3 +1,20 @@
+/* ── Confirm intent step ── */
+.checkin-intent {
+  text-align: center;
+  margin: 32px 0 24px;
+}
+.checkin-intent-greeting {
+  font-family: 'Saira Condensed', sans-serif;
+  font-size: 32px; font-weight: 700;
+  text-transform: uppercase; color: var(--white);
+  margin-bottom: 8px;
+}
+.checkin-intent-greeting span { color: var(--red); }
+.checkin-intent-label {
+  font-family: 'Inter', sans-serif;
+  font-size: 15px; color: var(--muted);
+}
+
 /* ── Check-in page shell ── */
 .checkin-page {
   min-height: 100dvh;
