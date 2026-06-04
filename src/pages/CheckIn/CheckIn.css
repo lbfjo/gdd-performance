@@ -15,7 +15,7 @@
   position: absolute; inset: 0;
   background:
     linear-gradient(180deg, rgba(7,24,58,0.55) 0%, rgba(13,15,20,0.92) 55%, var(--dark) 100%),
-    radial-gradient(ellipse at 60% 20%, rgba(200,16,46,0.18) 0%, transparent 60%);
+    radial-gradient(ellipse at 60% 20%, rgba(200,16,46,0.28) 0%, transparent 60%);
   pointer-events: none;
 }
 
@@ -24,6 +24,20 @@
   background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='1'/%3E%3C/svg%3E");
   background-repeat: repeat;
   pointer-events: none;
+}
+
+/* Subtle horizontal scanline texture — separate layer so it's not affected by noise opacity */
+.splash-scanlines {
+  position: absolute; inset: 0;
+  background: repeating-linear-gradient(
+    0deg,
+    transparent,
+    transparent 2px,
+    rgba(255,255,255,0.03) 2px,
+    rgba(255,255,255,0.03) 3px
+  );
+  pointer-events: none;
+  z-index: 0;
 }
 
 .splash-content {
@@ -37,6 +51,15 @@
 /* Logo block */
 .gdd-logo-block {
   text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* Centers the left-aligned Logo component within the centered block */
+.gdd-logo-center {
+  display: flex;
+  justify-content: center;
 }
 
 .gdd-logo-wordmark {
@@ -113,13 +136,15 @@
   border: 1px solid var(--border);
   border-radius: 4px;
   padding: 14px 16px;
-  font-family: 'Inter', sans-serif;
-  font-size: 15px;
-  font-weight: 500;
+  min-height: 56px;
+  font-family: 'Saira Condensed', sans-serif;
+  font-size: 16px;
+  font-weight: 700;
+  letter-spacing: 0.02em;
   color: var(--white);
   text-align: left;
   cursor: pointer;
-  transition: background 0.1s, border-color 0.1s;
+  transition: background 0.1s, border-color 0.1s, transform 0.08s;
   display: flex; align-items: center; gap: 12px;
 }
 .athlete-item::before {
@@ -130,9 +155,13 @@
   flex-shrink: 0;
   transition: background 0.1s;
 }
-.athlete-item:active,
 .athlete-item:hover { background: var(--card2); border-color: rgba(200,16,46,0.3); }
 .athlete-item:hover::before { background: var(--red); }
+.athlete-item:active {
+  background: var(--card2);
+  border-color: rgba(200,16,46,0.3);
+  transform: scale(0.98);
+}
 
 .athlete-empty {
   color: var(--muted);
@@ -180,6 +209,19 @@
 
 .pin-body { flex: 1; display: flex; flex-direction: column; justify-content: center; }
 
+/* Logo centered inside pin header */
+.pin-logo {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 4px;
+}
+
+/* btn-secondary back button for pin screen — overrides old ghost style */
+.pin-back-btn {
+  margin-top: 16px;
+}
+
+/* Keep old .pin-back for legacy safety, but it's no longer rendered */
 .pin-back {
   background: none;
   border: none;
@@ -204,6 +246,40 @@
   padding: 40px 24px;
   text-align: center;
   gap: 0;
+}
+
+/* Countdown progress bar — depletes over RESET_SECONDS */
+.confirm-countdown-bar {
+  position: absolute;
+  bottom: 0; left: 0; right: 0;
+  height: 3px;
+  background: rgba(255,255,255,0.06);
+  overflow: hidden;
+}
+
+.confirm-countdown-fill {
+  height: 100%;
+  width: 100%;
+  background: var(--red);
+  transform-origin: left center;
+  animation: countdown-deplete linear forwards;
+}
+
+@keyframes countdown-deplete {
+  from { transform: scaleX(1); }
+  to   { transform: scaleX(0); }
+}
+
+/* Athlete first name — large, bold, uppercase */
+.confirm-firstname {
+  font-family: 'Saira Condensed', sans-serif;
+  font-size: 32px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--white);
+  margin-bottom: 2px;
+  line-height: 1;
 }
 
 .confirm-ring {
