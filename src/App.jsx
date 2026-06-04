@@ -1,5 +1,17 @@
-import { lazy, Suspense } from 'react'
-import { Routes, Route, Navigate } from 'react-router-dom'
+import { lazy, Suspense, useEffect } from 'react'
+import { Routes, Route, Navigate, useLocation } from 'react-router-dom'
+
+function ManifestSwap() {
+  const { pathname } = useLocation()
+  useEffect(() => {
+    const isStaff = pathname === '/staff' || pathname === '/dashboard'
+    const link = document.querySelector('link[rel="manifest"]')
+    if (link) link.href = isStaff ? '/manifest-staff.json' : '/manifest.json'
+    const titleMeta = document.querySelector('meta[name="apple-mobile-web-app-title"]')
+    if (titleMeta) titleMeta.content = isStaff ? 'GDD Staff' : 'GDD'
+  }, [pathname])
+  return null
+}
 
 const CheckIn   = lazy(() => import('./pages/CheckIn'))
 const Staff     = lazy(() => import('./pages/Staff'))
@@ -27,6 +39,7 @@ function PageLoader() {
 export default function App() {
   return (
     <Suspense fallback={<PageLoader />}>
+      <ManifestSwap />
       <Routes>
         <Route path="/"          element={<CheckIn />} />
         <Route path="/staff"     element={<Staff />} />

@@ -1,55 +1,44 @@
-/* GDD Performance logo mark.
-   Props:
-     size — 'sm' | 'md' | 'lg'  (default 'md')
-*/
-
 const SIZE_MAP = {
-  sm: { gdd: 36, sub: 11, border: 3 },
-  md: { gdd: 56, sub: 14, border: 4 },
-  lg: { gdd: 80, sub: 18, border: 4 },
+  sm: { img: 40, text: 11 },
+  md: { img: 56, text: 13 },
+  lg: { img: 80, text: 16 },
 }
 
 export default function Logo({ size = 'md' }) {
-  const { gdd, sub, border } = SIZE_MAP[size] ?? SIZE_MAP.md
+  const { img, text } = SIZE_MAP[size] ?? SIZE_MAP.md
 
   return (
-    <div
-      style={{
-        display: 'inline-flex',
-        flexDirection: 'column',
-        alignItems: 'flex-start',
-        borderLeft: `${border}px solid var(--red)`,
-        paddingLeft: Math.round(border * 2.5),
-        lineHeight: 1,
-      }}
-    >
-      <span
-        style={{
+    <div style={{ display: 'inline-flex', alignItems: 'center', gap: Math.round(img * 0.25) }}>
+      <img
+        src="/logo.png"
+        alt="GDD"
+        style={{ width: img, height: img, objectFit: 'contain' }}
+        draggable={false}
+      />
+      <div style={{ display: 'flex', flexDirection: 'column', lineHeight: 1 }}>
+        <span style={{
           fontFamily: "'Saira Condensed', sans-serif",
-          fontWeight: 700,
-          fontSize: gdd,
+          fontWeight: 800,
+          fontSize: Math.round(img * 0.55),
           letterSpacing: '0.04em',
           textTransform: 'uppercase',
           color: 'var(--white)',
           lineHeight: 0.95,
-        }}
-      >
-        GDD
-      </span>
-      <span
-        style={{
+        }}>
+          GDD
+        </span>
+        <span style={{
           fontFamily: "'Saira Condensed', sans-serif",
           fontWeight: 600,
-          fontSize: sub,
-          letterSpacing: '0.22em',
+          fontSize: text,
+          letterSpacing: '0.2em',
           textTransform: 'uppercase',
           color: 'var(--muted)',
-          marginTop: Math.round(sub * 0.3),
-          lineHeight: 1,
-        }}
-      >
-        PERFORMANCE
-      </span>
+          marginTop: 3,
+        }}>
+          PERFORMANCE
+        </span>
+      </div>
     </div>
   )
 }
