@@ -32,6 +32,7 @@ export default function CheckIn() {
     <div className="checkin-page">
       <div className="splash-bg" />
       <div className="splash-noise" />
+      <div className="splash-scanlines" />
 
       {step === 'name' && <StepName onSelect={handleSelectAthlete} />}
       {step === 'pin' && athlete && (

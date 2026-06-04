@@ -1,6 +1,7 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { getAthletes } from '../../services/athletes'
+import Logo from '../../components/Logo'
 
 export default function StepName({ onSelect }) {
   const navigate = useNavigate()
@@ -8,6 +9,7 @@ export default function StepName({ onSelect }) {
   const [search, setSearch] = useState('')
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
+  const searchRef = useRef(null)
 
   useEffect(() => {
     getAthletes()
@@ -16,16 +18,24 @@ export default function StepName({ onSelect }) {
       .finally(() => setLoading(false))
   }, [])
 
+  // Auto-focus the search input when the component mounts
+  useEffect(() => {
+    if (!loading && !error && searchRef.current) {
+      searchRef.current.focus()
+    }
+  }, [loading, error])
+
   const filtered = athletes.filter(a =>
     a.name.toLowerCase().includes(search.toLowerCase())
   )
 
   return (
     <div className="splash-content">
-      {/* Logo */}
+      {/* Logo block */}
       <div className="gdd-logo-block">
-        <div className="gdd-logo-wordmark">GDD</div>
-        <div className="gdd-logo-sub">Performance</div>
+        <div className="gdd-logo-center">
+          <Logo size="lg" />
+        </div>
         <div className="gdd-tagline">Train. Register. Compete.</div>
         <div className="gdd-divider" />
       </div>
@@ -38,6 +48,7 @@ export default function StepName({ onSelect }) {
         {!loading && !error && (
           <>
             <input
+              ref={searchRef}
               className="search-input"
               placeholder="Pesquisa o teu nome…"
               value={search}
@@ -57,7 +68,7 @@ export default function StepName({ onSelect }) {
                 </button>
               ))}
             </div>
-          <button
+            <button
               className="btn-secondary"
               style={{ marginTop: 8 }}
               onClick={() => navigate('/athlete')}

@@ -5,11 +5,13 @@ import { getConfig } from '../../services/config'
 import { getLocalDate } from '../../lib/dates'
 import { getActiveSlot, SLOTS } from '../../lib/slots'
 
+const RESET_SECONDS = 4
+
 export default function StepConfirm({ athlete, onReset }) {
   const [count, setCount]               = useState(null)
   const [weeklyTarget, setWeeklyTarget] = useState(null)
   const [bookedSlot, setBookedSlot]     = useState(null)
-  const [seconds, setSeconds]           = useState(8)
+  const [seconds, setSeconds]           = useState(RESET_SECONDS)
 
   useEffect(() => {
     const today = getLocalDate()
@@ -38,6 +40,8 @@ export default function StepConfirm({ athlete, onReset }) {
     return () => clearInterval(t)
   }, [onReset])
 
+  const firstName = athlete.name.split(' ')[0].toUpperCase()
+
   const timeStr = new Date().toLocaleString('pt-PT', {
     weekday: 'long', day: 'numeric', month: 'long',
     hour: '2-digit', minute: '2-digit', timeZone: 'Europe/Lisbon'
@@ -45,10 +49,21 @@ export default function StepConfirm({ athlete, onReset }) {
 
   return (
     <div className="confirm-screen">
+      {/* Auto-reset countdown bar at top of screen */}
+      <div className="confirm-countdown-bar">
+        <div
+          className="confirm-countdown-fill"
+          style={{ animationDuration: `${RESET_SECONDS}s` }}
+        />
+      </div>
+
       <div className="confirm-ring">
         <span className="confirm-checkmark">✓</span>
       </div>
       <h1 className="confirm-title">Check-in<br />Realizado!</h1>
+
+      {/* Athlete first name — Saira Condensed 700, 32px, uppercase */}
+      <p className="confirm-firstname">{firstName}</p>
       <p className="confirm-athlete">{athlete.name}</p>
       <p className="confirm-time">{timeStr}</p>
 

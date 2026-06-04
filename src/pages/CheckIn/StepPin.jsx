@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import PinPad from '../../components/PinPad'
+import Logo from '../../components/Logo'
 import { verifyAthletePin } from '../../services/athletes'
 import { hasCheckedInToday } from '../../services/checkins'
 import { recordFailedAttempt, isLockedOut, getRemainingSeconds, clearAttempts } from '../../lib/rateLimit'
@@ -52,7 +53,9 @@ export default function StepPin({ athlete, onSuccess, onAlreadyCheckedIn, onBack
   return (
     <div className="pin-screen">
       <div className="pin-header">
-        <div className="gdd-logo-wordmark" style={{ fontSize: 28 }}>GDD</div>
+        <div className="pin-logo">
+          <Logo size="sm" />
+        </div>
         <div style={{ height: 1, background: 'var(--border)', margin: '16px 0 20px' }} />
         <p className="pin-greeting">Olá, <span>{firstName}!</span></p>
         <p className="pin-label">Insere o teu PIN de 4 dígitos</p>
@@ -84,7 +87,7 @@ export default function StepPin({ athlete, onSuccess, onAlreadyCheckedIn, onBack
         )}
       </div>
 
-      <button className="pin-back" onClick={onBack}>← Voltar à lista</button>
+      <button className="btn-secondary pin-back-btn" onClick={onBack}>← Voltar à lista</button>
     </div>
   )
 }
