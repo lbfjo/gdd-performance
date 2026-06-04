@@ -10,6 +10,8 @@ export default function StepName({ onSelect }) {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
   const searchRef = useRef(null)
+  const deferredPrompt = useRef(null)
+  const [showInstallBanner, setShowInstallBanner] = useState(false)
 
   useEffect(() => {
     getAthletes()
@@ -18,18 +20,66 @@ export default function StepName({ onSelect }) {
       .finally(() => setLoading(false))
   }, [])
 
-  // Auto-focus the search input when the component mounts
   useEffect(() => {
-    if (!loading && !error && searchRef.current) {
-      searchRef.current.focus()
-    }
+    if (!loading && !error && searchRef.current) searchRef.current.focus()
   }, [loading, error])
+
+  useEffect(() => {
+    if (window.matchMedia('(display-mode: standalone)').matches) return
+    const handler = e => { e.preventDefault(); deferredPrompt.current = e; setShowInstallBanner(true) }
+    window.addEventListener('beforeinstallprompt', handler)
+    return () => window.removeEventListener('beforeinstallprompt', handler)
+  }, [])
+
+  function handleInstall() {
+    if (!deferredPrompt.current) return
+    deferredPrompt.current.prompt()
+    deferredPrompt.current = null
+    setShowInstallBanner(false)
+  }
 
   const filtered = athletes.filter(a =>
     a.name.toLowerCase().includes(search.toLowerCase())
   )
 
   return (
+    <>
+    {showInstallBanner && (
+      <div style={{
+        position: 'fixed',
+        bottom: 24,
+        left: 16,
+        right: 16,
+        background: 'var(--card)',
+        borderRadius: 12,
+        padding: '12px 16px',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+        gap: 12,
+        zIndex: 1000,
+        boxShadow: '0 4px 24px rgba(0,0,0,0.4)'
+      }}>
+        <span style={{ color: 'var(--muted)', fontSize: 14 }}>
+          Instala a app para acesso rápido
+        </span>
+        <button
+          onClick={handleInstall}
+          style={{
+            background: 'none',
+            border: 'none',
+            color: 'var(--red)',
+            fontWeight: 600,
+            fontSize: 14,
+            cursor: 'pointer',
+            padding: '4px 0',
+            whiteSpace: 'nowrap'
+          }}
+        >
+          Instalar
+        </button>
+      </div>
+    )}
     <div className="splash-content">
       {/* Logo block */}
       <div className="gdd-logo-block">
@@ -79,5 +129,6 @@ export default function StepName({ onSelect }) {
         )}
       </div>
     </div>
+    </>
   )
 }
