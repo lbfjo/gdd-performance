@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import PinPad from '../../components/PinPad'
+import '../CheckIn/CheckIn.css'
 import { getAthletes, verifyAthletePin, athleteHasPinSet, setFirstTimePin } from '../../services/athletes'
 import { recordFailedAttempt, isLockedOut, getRemainingSeconds, clearAttempts } from '../../lib/rateLimit'
 
