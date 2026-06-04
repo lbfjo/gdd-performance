@@ -27,6 +27,12 @@
   color: rgba(255,255,255,0.5);
 }
 
+.dashboard-header-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
 .dashboard-logout {
   background: transparent;
   border: 1px solid var(--border);
@@ -36,10 +42,28 @@
   letter-spacing: 0.08em; text-transform: uppercase;
   cursor: pointer;
   padding: 6px 14px;
+  height: 32px;
   border-radius: 4px;
   transition: color 0.15s, border-color 0.15s;
 }
 .dashboard-logout:hover { color: var(--white); border-color: rgba(255,255,255,0.2); }
+
+.dashboard-export {
+  background: transparent;
+  border: 1px solid var(--border);
+  color: var(--muted);
+  font-family: 'Saira Condensed', sans-serif;
+  font-size: 12px; font-weight: 600;
+  letter-spacing: 0.08em; text-transform: uppercase;
+  cursor: pointer;
+  padding: 0 12px;
+  height: 32px;
+  border-radius: 4px;
+  white-space: nowrap;
+  transition: color 0.15s, border-color 0.15s;
+}
+.dashboard-export:hover { color: var(--white); border-color: rgba(255,255,255,0.2); }
+.dashboard-export:disabled { opacity: 0.4; cursor: default; }
 
 /* ── Tab bar ── */
 .dashboard-tabs {
