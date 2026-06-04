@@ -64,6 +64,15 @@
   width: 26px; height: 20px; border-radius: 3px;
   background: var(--card2); border: 1px solid var(--border);
 }
+
+@media (min-width: 768px) {
+  .grid-name { max-width: 200px; font-size: 13px; }
+  .grid-cell { width: 36px; height: 28px; border-radius: 4px; }
+  .grid-table th { font-size: 13px; padding: 6px 4px; }
+  .grid-summary-row { gap: 16px; margin-bottom: 28px; }
+  .grid-stat-card { padding: 20px 16px; }
+  .grid-stat-number { font-size: 36px; }
+}
 .grid-cell.checked { background: var(--green); border-color: var(--green); }
 
 .grid-legend {

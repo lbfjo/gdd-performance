@@ -1,6 +1,6 @@
 .dashboard-page {
   min-height: 100dvh; display: flex; flex-direction: column;
-  background: var(--dark); max-width: 768px; margin: 0 auto;
+  background: var(--dark);
 }
 
 /* ── Header ── */
@@ -101,6 +101,16 @@
 .dashboard-content {
   flex: 1; padding: 20px;
   overflow-y: auto;
+  max-width: 1280px;
+  width: 100%;
+  margin: 0 auto;
+  box-sizing: border-box;
+}
+
+@media (min-width: 768px) {
+  .dashboard-header { padding: 16px 32px; }
+  .dashboard-tabs   { padding: 0 32px; }
+  .dashboard-content { padding: 28px 32px; }
 }
 
 /* ── Shared loading ── */

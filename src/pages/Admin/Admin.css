@@ -1,6 +1,6 @@
 .admin-page {
   min-height: 100dvh; display: flex; flex-direction: column;
-  background: var(--dark); max-width: 768px; margin: 0 auto;
+  background: var(--dark);
 }
 
 .admin-header {
@@ -49,7 +49,16 @@
 }
 .admin-tab.active { color: var(--white); border-bottom-color: var(--red); }
 
-.admin-content { flex: 1; padding: 20px; overflow-y: auto; }
+.admin-content {
+  flex: 1; padding: 20px; overflow-y: auto;
+  max-width: 1280px; width: 100%; margin: 0 auto; box-sizing: border-box;
+}
+
+@media (min-width: 768px) {
+  .admin-header  { padding: 16px 32px; }
+  .admin-tabs    { padding: 0 32px; }
+  .admin-content { padding: 28px 32px; }
+}
 
 .admin-athlete-row {
   display: flex; align-items: center; gap: 12px;
