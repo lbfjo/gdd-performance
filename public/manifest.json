@@ -1,0 +1,14 @@
+{
+  "name": "GDD Performance",
+  "short_name": "GDD",
+  "description": "Registo de treinos e check-in de ginásio",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#0D0F14",
+  "theme_color": "#C8102E",
+  "orientation": "portrait",
+  "icons": [
+    { "src": "/favicon.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "/favicon.png", "sizes": "512x512", "type": "image/png", "purpose": "any maskable" }
+  ]
+}

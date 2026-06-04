@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { getAthletes } from '../../services/athletes'
 
@@ -8,6 +8,9 @@ export default function StepName({ onSelect }) {
   const [search, setSearch] = useState('')
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
+  const [installPrompt, setInstallPrompt] = useState(null)
+  const [showInstallBanner, setShowInstallBanner] = useState(false)
+  const deferredPrompt = useRef(null)
 
   useEffect(() => {
     getAthletes()
@@ -16,11 +19,70 @@ export default function StepName({ onSelect }) {
       .finally(() => setLoading(false))
   }, [])
 
+  useEffect(() => {
+    const isStandalone = window.matchMedia('(display-mode: standalone)').matches
+    if (isStandalone) return
+
+    const handler = e => {
+      e.preventDefault()
+      deferredPrompt.current = e
+      setInstallPrompt(e)
+      setShowInstallBanner(true)
+    }
+    window.addEventListener('beforeinstallprompt', handler)
+    return () => window.removeEventListener('beforeinstallprompt', handler)
+  }, [])
+
+  const handleInstall = () => {
+    if (!deferredPrompt.current) return
+    deferredPrompt.current.prompt()
+    setShowInstallBanner(false)
+    deferredPrompt.current = null
+    setInstallPrompt(null)
+  }
+
   const filtered = athletes.filter(a =>
     a.name.toLowerCase().includes(search.toLowerCase())
   )
 
   return (
+    <>
+    {showInstallBanner && (
+      <div style={{
+        position: 'fixed',
+        bottom: 24,
+        left: 16,
+        right: 16,
+        background: 'var(--card)',
+        borderRadius: 12,
+        padding: '12px 16px',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+        gap: 12,
+        zIndex: 1000,
+        boxShadow: '0 4px 24px rgba(0,0,0,0.4)'
+      }}>
+        <span style={{ color: 'var(--muted)', fontSize: 14 }}>
+          Instala a app para acesso rápido
+        </span>
+        <button
+          onClick={handleInstall}
+          style={{
+            background: 'none',
+            border: 'none',
+            color: 'var(--red)',
+            fontWeight: 600,
+            fontSize: 14,
+            cursor: 'pointer',
+            padding: '4px 0',
+            whiteSpace: 'nowrap'
+          }}
+        >
+          Instalar
+        </button>
+      </div>
+    )}
     <div className="splash-content">
       {/* Logo */}
       <div className="gdd-logo-block">
@@ -68,5 +130,6 @@ export default function StepName({ onSelect }) {
         )}
       </div>
     </div>
+    </>
   )
 }
