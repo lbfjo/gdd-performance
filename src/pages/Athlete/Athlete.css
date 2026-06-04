@@ -428,3 +428,27 @@
   font-family: 'Saira Condensed', sans-serif;
   font-size: 12px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.06em;
 }
+
+/* ── Desktop responsive ── */
+@media (min-width: 768px) {
+  .athlete-page    { max-width: 720px; }
+  .athlete-header  { order: 1; }
+  .athlete-content { order: 3; padding-bottom: 24px; }
+
+  .athlete-tabs {
+    position: static;
+    transform: none;
+    max-width: none;
+    width: 100%;
+    border-top: none;
+    border-bottom: 1px solid var(--border);
+    order: 2;
+  }
+  .athlete-tab {
+    flex-direction: row;
+    gap: 8px;
+    padding: 14px 24px;
+    font-size: 12px;
+  }
+  .athlete-tab svg { width: 18px; height: 18px; }
+}
