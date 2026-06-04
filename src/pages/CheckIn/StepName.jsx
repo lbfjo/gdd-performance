@@ -98,6 +98,8 @@ export default function StepName({ onSelect }) {
         {!loading && !error && (
           <>
             <input
+              id="athlete-search"
+              name="athlete-search"
               ref={searchRef}
               className="search-input"
               placeholder="Pesquisa o teu nome…"
