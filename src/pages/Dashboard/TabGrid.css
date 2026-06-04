@@ -1,3 +1,32 @@
+/* ── Summary stat row ── */
+.grid-summary-row {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+  margin-bottom: 20px;
+}
+.grid-stat-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  padding: 14px 12px;
+  text-align: center;
+}
+.grid-stat-number {
+  font-family: 'Saira Condensed', sans-serif;
+  font-size: 28px;
+  font-weight: 700;
+  line-height: 1;
+}
+.grid-stat-label {
+  font-family: 'Inter', sans-serif;
+  font-size: 11px;
+  color: var(--muted);
+  margin-top: 5px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
 .grid-controls {
   display: flex; align-items: center; justify-content: space-between;
   margin-bottom: 20px;

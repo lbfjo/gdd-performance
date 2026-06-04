@@ -1,3 +1,86 @@
+/* ── Week-over-week comparison ── */
+.week-comparison {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 14px;
+  border-radius: 4px;
+  margin-bottom: 16px;
+  border: 1px solid;
+}
+.week-comparison.positive {
+  background: var(--green-bg);
+  border-color: rgba(0, 200, 83, 0.2);
+}
+.week-comparison.negative {
+  background: var(--red-bg);
+  border-color: rgba(200, 16, 46, 0.2);
+}
+.week-comparison-icon {
+  font-size: 14px;
+  font-weight: 700;
+}
+.week-comparison.positive .week-comparison-icon { color: var(--green); }
+.week-comparison.negative .week-comparison-icon { color: var(--red); }
+.week-comparison-text {
+  font-family: 'Saira Condensed', sans-serif;
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+.week-comparison.positive .week-comparison-text { color: var(--green); }
+.week-comparison.negative .week-comparison-text { color: var(--red); }
+
+/* ── Alerts section headers ── */
+.alerts-section {
+  margin-bottom: 20px;
+}
+.alerts-section-title {
+  font-family: 'Saira Condensed', sans-serif;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-bottom: 8px;
+}
+
+/* ── At-risk card variant ── */
+.alert-card--risk {
+  background: rgba(200, 16, 46, 0.06);
+  border-color: rgba(200, 16, 46, 0.35);
+  border-left: 3px solid var(--red);
+}
+.alert-name--risk {
+  color: #F87171;
+}
+
+/* ── Low activity card variant ── */
+.alert-card--low {
+  background: rgba(245, 158, 11, 0.06);
+  border-color: rgba(245, 158, 11, 0.2);
+  border-left: 3px solid var(--amber);
+}
+.alert-name--low {
+  color: var(--amber);
+}
+
+/* ── Pills ── */
+.pill {
+  font-family: 'Saira Condensed', sans-serif;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  padding: 3px 8px;
+  border-radius: 3px;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+.pill-red  { background: var(--red-bg);   color: var(--red); }
+.pill-amber { background: var(--amber-bg); color: var(--amber); }
+
 .alerts-summary {
   font-family: 'Saira Condensed', sans-serif;
   font-size: 14px; font-weight: 700;

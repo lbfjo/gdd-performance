@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback } from 'react'
 import { getCheckinsForWeek, getAllCheckinsForExport } from '../../services/checkins'
 import { getAthletes } from '../../services/athletes'
+import { getConfig } from '../../services/config'
 import { getLocalDate, getWeekBounds, formatDay, getPreviousWeekBounds } from '../../lib/dates'
 import './TabGrid.css'
 
@@ -18,6 +19,7 @@ export default function TabGrid() {
   const [weekStart, setWeekStart] = useState(() => getWeekBounds(getLocalDate()).start)
   const [loading, setLoading] = useState(true)
   const [exporting, setExporting] = useState(false)
+  const [weeklyTarget, setWeeklyTarget] = useState(null)
   const today = getLocalDate()
 
   async function handleExport() {
@@ -40,9 +42,10 @@ export default function TabGrid() {
 
   const load = useCallback(async (start) => {
     setLoading(true)
-    const [aths, checkins] = await Promise.all([
+    const [aths, checkins, cfg] = await Promise.all([
       getAthletes(),
       getCheckinsForWeek(start),
+      getConfig(),
     ])
     const map = {}
     checkins.forEach(c => {
@@ -51,6 +54,7 @@ export default function TabGrid() {
     })
     setAthletes(aths)
     setCheckinsByAthlete(map)
+    setWeeklyTarget(cfg.weeklyTarget)
     setLoading(false)
   }, [])
 
@@ -60,8 +64,43 @@ export default function TabGrid() {
   const currentWeekStart = getWeekBounds(today).start
   const isCurrentWeek = weekStart === currentWeekStart
 
+  // Summary stat computations (only meaningful for current week)
+  const sessionsHoje = athletes.filter(a => checkinsByAthlete[a.id]?.has(today)).length
+
+  const totalAthletes = athletes.length
+  const athletesOnTarget = weeklyTarget != null
+    ? athletes.filter(a => (checkinsByAthlete[a.id]?.size ?? 0) >= weeklyTarget).length
+    : null
+  const taxaSemanal = weeklyTarget != null && totalAthletes > 0
+    ? Math.round((athletesOnTarget / totalAthletes) * 100)
+    : null
+
+  const totalSessions = athletes.reduce((sum, a) => sum + (checkinsByAthlete[a.id]?.size ?? 0), 0)
+  const presencaMedia = totalAthletes > 0
+    ? (totalSessions / totalAthletes).toFixed(1)
+    : '0.0'
+
   return (
     <>
+      {!loading && isCurrentWeek && (
+        <div className="grid-summary-row">
+          <div className="grid-stat-card">
+            <div className="grid-stat-number" style={{ color: 'var(--green)' }}>{sessionsHoje}</div>
+            <div className="grid-stat-label">Sessões hoje</div>
+          </div>
+          <div className="grid-stat-card">
+            <div className="grid-stat-number" style={{ color: taxaSemanal != null && taxaSemanal >= 50 ? 'var(--green)' : 'var(--red)' }}>
+              {taxaSemanal != null ? `${taxaSemanal}%` : '—'}
+            </div>
+            <div className="grid-stat-label">Taxa semanal</div>
+          </div>
+          <div className="grid-stat-card">
+            <div className="grid-stat-number" style={{ color: 'var(--red)' }}>{presencaMedia}</div>
+            <div className="grid-stat-label">Presença média</div>
+          </div>
+        </div>
+      )}
+
       <div className="grid-controls">
         <button className="grid-nav" onClick={() => setWeekStart(s => getPreviousWeekBounds(s).start)}>‹</button>
         <span className="grid-week-label">
