@@ -74,16 +74,45 @@ export default function TabBookings() {
           const athletes = bySlot[key]
           const isOpen = expanded[key]
 
+          const CAPACITY = 30
+          const fillRatio = Math.min(athletes.length / CAPACITY, 1)
+          const fillPct = Math.round(fillRatio * 100)
+          const fillColor = fillRatio > 0.8
+            ? 'var(--red)'
+            : fillRatio >= 0.5
+              ? 'var(--amber)'
+              : 'var(--green)'
+
           return (
             <div key={key} className="db-slot-section">
-              <div className="db-slot-header" onClick={() => toggleSlot(key)}>
+              <div className="db-slot-header" onClick={() => toggleSlot(key)} style={{ position: 'relative', overflow: 'hidden' }}>
                 <div className="db-slot-header-left">
                   <p className="db-slot-name">{slot.label}</p>
                   <p className="db-slot-time">{slot.start} – {slot.end}</p>
+                  <p style={{ fontFamily: 'Inter, sans-serif', fontSize: 12, color: 'var(--muted)', marginTop: 3 }}>
+                    {athletes.length} / {CAPACITY} atletas
+                  </p>
                 </div>
                 <span className="db-slot-count">
                   {athletes.length} atleta{athletes.length !== 1 ? 's' : ''} {isOpen ? '▴' : '▾'}
                 </span>
+                {/* Fill bar */}
+                <div style={{
+                  position: 'absolute',
+                  bottom: 0,
+                  left: 0,
+                  right: 0,
+                  height: 3,
+                  background: 'var(--border)',
+                }}>
+                  <div style={{
+                    height: '100%',
+                    width: `${fillPct}%`,
+                    background: fillColor,
+                    transition: 'width 0.3s ease',
+                    borderRadius: '0 2px 2px 0',
+                  }} />
+                </div>
               </div>
 
               {isOpen && athletes.length > 0 && (
