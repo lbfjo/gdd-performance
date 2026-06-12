@@ -1,7 +1,16 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import { getAthletes } from '../../services/athletes'
-import { getWeightHistory } from '../../services/nutrition'
+import { getWeightHistory, getWeightLogsForWeek } from '../../services/nutrition'
+import { getLocalDate, getWeekBounds, getPreviousWeekBounds } from '../../lib/dates'
 import './TabNutrition.css'
+
+function getWeekDays(start) {
+  return Array.from({ length: 7 }, (_, i) => {
+    const d = new Date(start + 'T12:00:00')
+    d.setDate(d.getDate() + i)
+    return d.toLocaleDateString('sv-SE')
+  })
+}
 
 function WeightChart({ data }) {
   if (data.length < 2) return null
@@ -84,12 +93,44 @@ function WeightChart({ data }) {
 
 export default function TabNutrition() {
   const [athletes, setAthletes] = useState([])
+  const [weightsByAthlete, setWeightsByAthlete] = useState({})
+  const [weekStart, setWeekStart] = useState(() => getWeekBounds(getLocalDate()).start)
+  const [loading, setLoading] = useState(true)
+  const today = getLocalDate()
+
   const [search, setSearch] = useState('')
   const [selected, setSelected] = useState(null)
   const [history, setHistory] = useState([])
-  const [loading, setLoading] = useState(false)
+  const [detailLoading, setDetailLoading] = useState(false)
 
-  useEffect(() => { getAthletes().then(setAthletes).catch(() => {}) }, [])
+  const loadGrid = useCallback(async (start) => {
+    setLoading(true)
+    const days = getWeekDays(start)
+    const [aths, logs] = await Promise.all([
+      getAthletes(),
+      getWeightLogsForWeek(days[0], days[6]).catch(() => []),
+    ])
+    const map = {}
+    logs.forEach(l => {
+      if (!map[l.athleteId]) map[l.athleteId] = {}
+      map[l.athleteId][l.date] = l.weight
+    })
+    setAthletes(aths)
+    setWeightsByAthlete(map)
+    setLoading(false)
+  }, [])
+
+  useEffect(() => { loadGrid(weekStart) }, [weekStart, loadGrid])
+
+  const days = getWeekDays(weekStart)
+  const currentWeekStart = getWeekBounds(today).start
+  const isCurrentWeek = weekStart === currentWeekStart
+
+  const athletesWithLogs = athletes.filter(a => weightsByAthlete[a.id])
+  const totalLogs = Object.values(weightsByAthlete).reduce(
+    (sum, dates) => sum + Object.keys(dates).length, 0
+  )
+  const loggedToday = athletes.filter(a => weightsByAthlete[a.id]?.[today]).length
 
   const filtered = search.length > 0
     ? athletes.filter(a => a.name.toLowerCase().includes(search.toLowerCase())).slice(0, 5)
@@ -98,20 +139,96 @@ export default function TabNutrition() {
   async function selectAthlete(a) {
     setSelected(a)
     setSearch(a.name)
-    setLoading(true)
+    setDetailLoading(true)
     const hist = await getWeightHistory(a.id, 30).catch(() => [])
     setHistory(hist)
-    setLoading(false)
+    setDetailLoading(false)
   }
 
   const sorted = [...history].sort((a, b) => a.date.localeCompare(b.date))
   const latest = sorted.length > 0 ? sorted[sorted.length - 1] : null
   const earliest = sorted.length > 1 ? sorted[0] : null
   const delta = latest && earliest ? (latest.weight - earliest.weight).toFixed(1) : null
-  const daysLogged = history.length
 
   return (
     <>
+      {/* ── Weekly weight grid ── */}
+      {!loading && isCurrentWeek && (
+        <div className="grid-summary-row">
+          <div className="grid-stat-card">
+            <div className="grid-stat-number" style={{ color: 'var(--green)' }}>{loggedToday}</div>
+            <div className="grid-stat-label">Pesagens hoje</div>
+          </div>
+          <div className="grid-stat-card">
+            <div className="grid-stat-number" style={{ color: 'var(--white)' }}>{athletesWithLogs.length}</div>
+            <div className="grid-stat-label">Atletas c/ registo</div>
+          </div>
+          <div className="grid-stat-card">
+            <div className="grid-stat-number" style={{ color: 'var(--red)' }}>{totalLogs}</div>
+            <div className="grid-stat-label">Total registos</div>
+          </div>
+        </div>
+      )}
+
+      <div className="grid-controls">
+        <button className="grid-nav" onClick={() => setWeekStart(s => getPreviousWeekBounds(s).start)}>‹</button>
+        <span className="grid-week-label">
+          {new Date(days[0]+'T12:00:00').toLocaleDateString('pt-PT',{day:'numeric',month:'short'})} — {new Date(days[6]+'T12:00:00').toLocaleDateString('pt-PT',{day:'numeric',month:'short'})}
+        </span>
+        <button className="grid-nav" disabled={isCurrentWeek} onClick={() => {
+          const next = new Date(weekStart + 'T12:00:00')
+          next.setDate(next.getDate() + 7)
+          setWeekStart(next.toLocaleDateString('sv-SE'))
+        }}>›</button>
+      </div>
+
+      {loading ? (
+        <p className="loading-state">A carregar…</p>
+      ) : (
+        <div style={{ overflowX: 'auto' }}>
+          <table className="grid-table">
+            <thead>
+              <tr>
+                <th />
+                {days.map(d => (
+                  <th key={d} className={d === today ? 'today' : ''}>
+                    {new Date(d+'T12:00:00').toLocaleDateString('pt-PT',{weekday:'short'}).slice(0,1).toUpperCase()}
+                  </th>
+                ))}
+              </tr>
+            </thead>
+            <tbody>
+              {athletes.map(a => {
+                const hasAny = !!weightsByAthlete[a.id]
+                return (
+                  <tr key={a.id} className={hasAny ? '' : 'nutri-row-empty'}>
+                    <td className="grid-name" title={a.name}>{a.name.split(' ')[0]} {a.name.split(' ').slice(-1)}</td>
+                    {days.map(d => {
+                      const w = weightsByAthlete[a.id]?.[d]
+                      return (
+                        <td key={d} style={{ textAlign: 'center' }}>
+                          <div className={`grid-cell${w ? ' nutri-filled' : ''}`}>
+                            {w && <span className="nutri-cell-weight">{w}</span>}
+                          </div>
+                        </td>
+                      )
+                    })}
+                  </tr>
+                )
+              })}
+            </tbody>
+          </table>
+        </div>
+      )}
+
+      <div className="grid-legend">
+        <div className="legend-item"><div className="legend-dot" style={{ background: 'var(--green)' }} /> Pesou</div>
+        <div className="legend-item"><div className="legend-dot" style={{ background: 'var(--card2)', border: '1px solid var(--border)' }} /> Sem registo</div>
+      </div>
+
+      {/* ── Per-athlete detail ── */}
+      <div className="nutri-detail-divider" />
+
       <input
         className="athlete-search"
         placeholder="🔍 Procurar atleta..."
@@ -127,7 +244,7 @@ export default function TabNutrition() {
         </div>
       )}
 
-      {selected && !loading && (
+      {selected && !detailLoading && (
         <>
           {history.length > 0 ? (
             <>
@@ -147,7 +264,7 @@ export default function TabNutrition() {
                   <div className="stat-label">Variação</div>
                 </div>
                 <div className="stat-card">
-                  <div className="stat-number" style={{ color: 'var(--white)' }}>{daysLogged}</div>
+                  <div className="stat-number" style={{ color: 'var(--white)' }}>{history.length}</div>
                   <div className="stat-label">Dias registados</div>
                 </div>
               </div>
@@ -165,7 +282,7 @@ export default function TabNutrition() {
         </>
       )}
 
-      {loading && <p className="loading-state">A carregar…</p>}
+      {detailLoading && <p className="loading-state">A carregar…</p>}
     </>
   )
 }

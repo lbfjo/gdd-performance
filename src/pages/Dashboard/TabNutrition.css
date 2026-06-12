@@ -20,6 +20,30 @@
   width: 100%; height: auto; display: block;
 }
 
+/* ── Weight grid cells ── */
+.grid-cell.nutri-filled {
+  background: var(--green);
+  border-color: var(--green);
+  display: flex; align-items: center; justify-content: center;
+  min-width: 38px;
+}
+.nutri-cell-weight {
+  font-family: 'Saira Condensed', sans-serif;
+  font-size: 10px; font-weight: 700;
+  color: #0D0F14;
+  line-height: 1;
+}
+@media (min-width: 768px) {
+  .grid-cell.nutri-filled { min-width: 48px; }
+  .nutri-cell-weight { font-size: 12px; }
+}
+.nutri-row-empty { opacity: 0.35; }
+
+.nutri-detail-divider {
+  border-top: 1px solid var(--border);
+  margin: 28px 0 20px;
+}
+
 .nutri-dash-empty {
   background: var(--card); border: 1px solid var(--border);
   border-radius: 4px; padding: 32px 16px;

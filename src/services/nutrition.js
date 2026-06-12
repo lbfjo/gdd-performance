@@ -29,6 +29,17 @@ export async function getWeightHistory(athleteId, days = 7) {
   return snap.docs.map(d => ({ id: d.id, ...d.data() }))
 }
 
+export async function getWeightLogsForWeek(startDate, endDate) {
+  const q = query(
+    collection(db, 'nutrition_logs'),
+    where('date', '>=', startDate),
+    where('date', '<=', endDate),
+    orderBy('date', 'asc')
+  )
+  const snap = await getDocs(q)
+  return snap.docs.map(d => ({ id: d.id, ...d.data() }))
+}
+
 export async function logWeight(athleteId, athleteName, weight) {
   const today = getLocalDate()
   const q = query(
