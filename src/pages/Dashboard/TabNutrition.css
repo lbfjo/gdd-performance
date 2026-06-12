@@ -1,0 +1,29 @@
+.nutri-dash-stats {
+  display: grid; grid-template-columns: 1fr 1fr 1fr;
+  gap: 10px; margin-bottom: 20px;
+}
+
+.nutri-dash-chart-title {
+  font-family: 'Saira Condensed', sans-serif;
+  font-size: 13px; font-weight: 700;
+  letter-spacing: 0.08em; text-transform: uppercase;
+  color: var(--muted); margin-bottom: 10px;
+}
+
+.nutri-dash-chart-wrap {
+  background: var(--card); border: 1px solid var(--border);
+  border-radius: 4px; padding: 16px 8px;
+  margin-bottom: 20px;
+}
+
+.weight-chart-svg {
+  width: 100%; height: auto; display: block;
+}
+
+.nutri-dash-empty {
+  background: var(--card); border: 1px solid var(--border);
+  border-radius: 4px; padding: 32px 16px;
+  text-align: center;
+  font-family: 'Inter', sans-serif;
+  font-size: 13px; color: var(--muted);
+}

@@ -6,6 +6,7 @@ import TabAthlete from './TabAthlete'
 import TabLeaderboard from './TabLeaderboard'
 import TabAlerts from './TabAlerts'
 import TabBookings from './TabBookings'
+import TabNutrition from './TabNutrition'
 import { getCheckinsForWeek } from '../../services/checkins'
 import { getBookingsForDate } from '../../services/bookings'
 import { getLocalDate, getWeekBounds } from '../../lib/dates'
@@ -17,6 +18,7 @@ const TABS = [
   { key: 'leaderboard', label: 'Ranking' },
   { key: 'alerts', label: 'Alertas' },
   { key: 'bookings', label: 'Reservas' },
+  { key: 'nutrition', label: 'Nutrição' },
 ]
 
 export default function Dashboard() {
@@ -118,6 +120,7 @@ export default function Dashboard() {
         {activeTab === 'leaderboard' && <TabLeaderboard />}
         {activeTab === 'alerts' && <TabAlerts />}
         {activeTab === 'bookings' && <TabBookings />}
+        {activeTab === 'nutrition' && <TabNutrition />}
       </div>
     </div>
   )

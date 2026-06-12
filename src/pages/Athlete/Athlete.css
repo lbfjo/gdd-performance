@@ -214,6 +214,10 @@
   color: var(--dark); font-weight: 600;
   border-radius: 4px;
 }
+.cal-day.double {
+  background: var(--amber);
+  color: #0D0F14; font-weight: 700;
+}
 .cal-day.today-marker {
   border: 1px solid var(--red);
   color: var(--red); font-weight: 600;
@@ -271,9 +275,12 @@
   background: rgba(200,16,46,0.8);
 }
 .heatmap-checked .heatmap-day-num { color: var(--white); font-weight: 600; }
+.heatmap-double { background: var(--amber); }
+.heatmap-double .heatmap-day-num { color: #0D0F14; font-weight: 700; }
 /* Today border */
 .heatmap-today { outline: 1.5px solid var(--red); outline-offset: -1px; }
 .heatmap-checked.heatmap-today { outline-color: rgba(255,255,255,0.5); }
+.heatmap-double.heatmap-today { outline-color: rgba(255,255,255,0.5); }
 /* White dot for checked days */
 .heatmap-dot {
   display: block; width: 4px; height: 4px; border-radius: 50%;
@@ -427,6 +434,102 @@
 .upcoming-slot {
   font-family: 'Saira Condensed', sans-serif;
   font-size: 12px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.06em;
+}
+
+/* ── Nutrition tab ── */
+.nutri-section-title {
+  font-family: 'Saira Condensed', sans-serif;
+  font-size: 14px; font-weight: 700;
+  letter-spacing: 0.08em; text-transform: uppercase;
+  color: var(--muted); margin-bottom: 12px;
+  display: flex; align-items: center; gap: 8px;
+}
+.nutri-section-title svg { color: var(--muted); flex-shrink: 0; }
+
+.nutri-weight-form {
+  background: var(--card); border: 1px solid var(--border);
+  border-radius: 4px; padding: 20px 16px;
+  margin-bottom: 8px;
+}
+.nutri-weight-input-wrap {
+  display: flex; align-items: center; gap: 8px;
+  margin-bottom: 14px;
+}
+.nutri-weight-input {
+  flex: 1; background: var(--card2); border: 1px solid var(--border);
+  border-radius: 4px; padding: 12px 14px;
+  font-family: 'Saira Condensed', sans-serif;
+  font-size: 24px; font-weight: 700;
+  color: var(--white); outline: none;
+  -moz-appearance: textfield;
+}
+.nutri-weight-input::-webkit-outer-spin-button,
+.nutri-weight-input::-webkit-inner-spin-button {
+  -webkit-appearance: none; margin: 0;
+}
+.nutri-weight-input:focus { border-color: var(--red); }
+.nutri-weight-input::placeholder {
+  color: var(--muted); font-weight: 400; font-size: 18px;
+}
+.nutri-weight-unit {
+  font-family: 'Saira Condensed', sans-serif;
+  font-size: 18px; font-weight: 700;
+  color: var(--muted); letter-spacing: 0.04em;
+}
+.nutri-hint {
+  font-family: 'Inter', sans-serif;
+  font-size: 11px; color: var(--muted);
+  margin-top: 10px; letter-spacing: 0.02em;
+}
+
+.nutri-weight-logged {
+  background: var(--green-bg); border: 1px solid rgba(0,200,83,0.2);
+  border-radius: 4px; padding: 16px;
+  margin-bottom: 8px;
+}
+.nutri-weight-logged-row {
+  display: flex; align-items: center; justify-content: space-between;
+}
+.nutri-weight-value {
+  font-family: 'Saira Condensed', sans-serif;
+  font-size: 28px; font-weight: 700; color: var(--green);
+}
+.nutri-weight-check {
+  font-size: 20px; color: var(--green);
+}
+.nutri-edit-btn {
+  background: none; border: none; padding: 0;
+  font-family: 'Inter', sans-serif;
+  font-size: 12px; color: var(--muted);
+  cursor: pointer; margin-top: 8px;
+  text-decoration: underline;
+  transition: color 0.15s;
+}
+.nutri-edit-btn:hover { color: var(--white); }
+.nutri-cancel-btn {
+  background: none; border: none; padding: 0;
+  font-family: 'Inter', sans-serif;
+  font-size: 12px; color: var(--muted);
+  cursor: pointer; margin-top: 6px;
+  text-decoration: underline;
+}
+
+.nutri-history-list {
+  display: flex; flex-direction: column; gap: 6px;
+}
+.nutri-history-row {
+  background: var(--card); border: 1px solid var(--border);
+  border-radius: 4px; padding: 12px 16px;
+  display: flex; align-items: center; justify-content: space-between;
+}
+.nutri-history-date {
+  font-family: 'Inter', sans-serif;
+  font-size: 13px; font-weight: 500; color: var(--white);
+  text-transform: capitalize;
+}
+.nutri-history-weight {
+  font-family: 'Saira Condensed', sans-serif;
+  font-size: 16px; font-weight: 700; color: var(--white);
 }
 
 /* ── Desktop responsive ── */

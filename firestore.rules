@@ -26,6 +26,15 @@ service cloud.firestore {
                    && request.resource.data.staffPin is string;
     }
 
+    match /nutrition_logs/{id} {
+      allow read: if true;
+      allow create: if request.resource.data.keys().hasAll(['athleteId','athleteName','date','weight','timestamp'])
+                    && request.resource.data.athleteId is string
+                    && request.resource.data.date is string
+                    && request.resource.data.weight is number;
+      allow update: if request.resource.data.weight is number;
+    }
+
     match /bookings/{id} {
       allow read: if true;
       allow create: if request.resource.data.keys().hasAll(['athleteId','athleteName','date','slot','bookedAt'])
