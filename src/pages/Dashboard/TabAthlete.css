@@ -57,3 +57,19 @@
   font-size: 13px; font-weight: 700;
   color: var(--white); width: 18px; text-align: right;
 }
+
+.athlete-section-divider {
+  border-top: 1px solid var(--border);
+  margin: 24px 0 16px;
+}
+.athlete-section-title {
+  font-family: 'Saira Condensed', sans-serif;
+  font-size: 13px; font-weight: 700;
+  letter-spacing: 0.08em; text-transform: uppercase;
+  color: var(--muted); margin-bottom: 12px;
+}
+.athlete-no-weight {
+  font-family: 'Inter', sans-serif;
+  font-size: 13px; color: var(--muted);
+  padding: 16px 0;
+}
