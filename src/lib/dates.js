@@ -28,3 +28,19 @@ export function getPreviousWeekBounds(dateStr) {
   prevMonday.setDate(prevMonday.getDate() - 7)
   return getWeekBounds(prevMonday.toLocaleDateString('sv-SE'))
 }
+
+export function getBookingWeekdays(dateStr) {
+  const date = new Date(dateStr + 'T12:00:00')
+  const { start } = getWeekBounds(dateStr)
+  const monday = new Date(start + 'T12:00:00')
+
+  if (date.getDay() === 0 || date.getDay() === 6) {
+    monday.setDate(monday.getDate() + 7)
+  }
+
+  return Array.from({ length: 5 }, (_, index) => {
+    const weekday = new Date(monday)
+    weekday.setDate(monday.getDate() + index)
+    return weekday.toLocaleDateString('sv-SE')
+  })
+}

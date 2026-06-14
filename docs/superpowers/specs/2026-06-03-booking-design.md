@@ -22,7 +22,8 @@ Three fixed weekday slots — not configurable via UI (hardcoded in the app):
 | `evening` | Tarde | 18:00–20:00 |
 
 - Available Monday–Friday only. Saturday and Sunday slots are shown as unavailable.
-- A slot is bookable until its start time. After 07:00 the morning slot is closed, etc.
+- A slot becomes bookable 24 hours before its start time and remains bookable until it starts.
+- After 07:00 the morning slot is closed, etc.
 - Timezone: `Europe/Lisbon` for all time comparisons.
 
 ---
@@ -197,7 +198,7 @@ If no booking matches (athlete checked in outside a booked slot, or no booking a
 
 ## Day Strip — Week Range
 
-The day strip shows **the current week (Mon–Fri)** only — 5 days. Athletes cannot book into future weeks from this view. Since slots are bookable until their start time, and the view only shows the current week, this naturally limits booking to "today until slot starts."
+The day strip shows **the current week (Mon–Fri)** only — 5 days. On weekends it rolls forward to the next Monday–Friday. Slots more than 24 hours away remain visible but unavailable.
 
 **Edge case — Friday after 20:00:** All slots for the week have passed. The strip shows the current week greyed out. Next Monday's strip becomes available when the new week starts.
 
@@ -217,6 +218,7 @@ The day strip shows **the current week (Mon–Fri)** only — 5 days. Athletes c
 
 - Athlete can book a slot for today in under 3 taps from the Reservas tab
 - Athlete cannot book the same slot twice
+- Athlete cannot book a slot more than 24 hours before it starts
 - Athlete cannot book a slot whose start time has passed
 - Staff can see all booked athletes for any weekday in the current week
 - Staff can see which booked athletes checked in vs. didn't show

@@ -1,4 +1,4 @@
-import { isWeekday, getActiveSlot, isSlotBookable, SLOTS, SLOT_ORDER } from '../slots'
+import { isWeekday, getActiveSlot, getSlotBookingStatus, isSlotBookable, SLOTS, SLOT_ORDER } from '../slots'
 
 describe('isWeekday', () => {
   it('returns true for Monday 2026-06-01', () => expect(isWeekday('2026-06-01')).toBe(true))
@@ -44,11 +44,31 @@ describe('isSlotBookable', () => {
     // 08:00 UTC = 09:00 Lisbon — before 12:00 lunch start
     expect(isSlotBookable('lunch', '2026-06-03', new Date('2026-06-03T08:00:00Z'))).toBe(true)
   })
-  it('returns true for any slot on future weekday', () => {
+  it('returns true for a future slot less than 24 hours away', () => {
     expect(isSlotBookable('morning', '2026-06-04', new Date('2026-06-03T23:00:00Z'))).toBe(true)
+  })
+  it('returns true exactly 24 hours before the slot starts', () => {
+    expect(isSlotBookable('morning', '2026-06-04', new Date('2026-06-03T06:00:00Z'))).toBe(true)
+  })
+  it('returns false more than 24 hours before the slot starts', () => {
+    expect(isSlotBookable('morning', '2026-06-04', new Date('2026-06-03T05:59:59Z'))).toBe(false)
   })
   it('returns false for unknown slot key', () => {
     expect(isSlotBookable('unknown', '2026-06-03', new Date('2026-06-03T08:00:00Z'))).toBe(false)
+  })
+})
+
+describe('getSlotBookingStatus', () => {
+  it('returns too-early when the slot is more than 24 hours away', () => {
+    expect(getSlotBookingStatus('evening', '2026-06-04', new Date('2026-06-03T15:00:00Z'))).toBe('too-early')
+  })
+
+  it('returns open within the 24-hour booking window', () => {
+    expect(getSlotBookingStatus('evening', '2026-06-04', new Date('2026-06-03T17:30:00Z'))).toBe('open')
+  })
+
+  it('returns closed once the slot has started', () => {
+    expect(getSlotBookingStatus('evening', '2026-06-04', new Date('2026-06-04T17:00:00Z'))).toBe('closed')
   })
 })
 

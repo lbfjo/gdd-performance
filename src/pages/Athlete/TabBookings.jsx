@@ -1,24 +1,15 @@
 import { useState, useEffect } from 'react'
 import { getBookingsForAthlete, addBooking, hasBooking, getBookingCountForSlot, cancelBooking, isCancellable } from '../../services/bookings'
-import { getLocalDate, getWeekBounds } from '../../lib/dates'
-import { SLOTS, SLOT_ORDER, isWeekday, isSlotBookable } from '../../lib/slots'
+import { getBookingWeekdays, getLocalDate } from '../../lib/dates'
+import { SLOTS, SLOT_ORDER, getSlotBookingStatus, isWeekday, isSlotBookable } from '../../lib/slots'
 
 const PT_DAYS = ['Dom','Seg','Ter','Qua','Qui','Sex','Sáb']
 
-function getWeekdays(mondayStr) {
-  return Array.from({ length: 5 }, (_, i) => {
-    const d = new Date(mondayStr + 'T12:00:00')
-    d.setDate(d.getDate() + i)
-    return d.toLocaleDateString('sv-SE')
-  })
-}
-
 export default function TabBookings({ athlete }) {
   const today = getLocalDate()
-  const { start: monday } = getWeekBounds(today)
-  const weekdays = getWeekdays(monday)
+  const weekdays = getBookingWeekdays(today)
 
-  const [selectedDay, setSelectedDay] = useState(today)
+  const [selectedDay, setSelectedDay] = useState(() => isWeekday(today) ? today : weekdays[0])
   const [allBookings, setAllBookings] = useState([])
   const [booking, setBooking] = useState(null)
   const [loading, setLoading] = useState(true)
@@ -52,6 +43,7 @@ export default function TabBookings({ athlete }) {
 
   async function handleBook(slot) {
     if (booking) return
+    if (!isSlotBookable(slot, selectedDay)) return
     const already = await hasBooking(athlete.id, selectedDay, slot)
     if (already) {
       setAllBookings(prev => [...prev, { id: `${selectedDay}-${slot}`, athleteId: athlete.id, date: selectedDay, slot }])
@@ -118,7 +110,8 @@ export default function TabBookings({ athlete }) {
         SLOT_ORDER.map(slotKey => {
           const slot = SLOTS[slotKey]
           const isBooked = bookedSet.has(`${selectedDay}|${slotKey}`)
-          const bookable = isSlotBookable(slotKey, selectedDay, now)
+          const bookingStatus = getSlotBookingStatus(slotKey, selectedDay, now)
+          const bookable = bookingStatus === 'open'
           const count = slotCounts[slotKey]
           const cancellable = isCancellable(slotKey, selectedDay)
 
@@ -171,7 +164,9 @@ export default function TabBookings({ athlete }) {
                     {booking === slotKey ? '…' : 'Reservar'}
                   </button>
                 ) : (
-                  <span className="slot-status-closed">Terminado</span>
+                  <span className="slot-status-closed">
+                    {bookingStatus === 'too-early' ? 'Disponível 24h antes' : 'Terminado'}
+                  </span>
                 )}
               </div>
             </div>

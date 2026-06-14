@@ -1,4 +1,5 @@
 const TZ = 'Europe/Lisbon'
+const BOOKING_WINDOW_MS = 24 * 60 * 60 * 1000
 
 export const SLOTS = {
   morning: { key: 'morning', label: 'Manhã',  start: '07:00', end: '09:00' },
@@ -18,6 +19,25 @@ function nowInLisbonMinutes(now) {
   return toMinutes(str)
 }
 
+function getSlotStart(slotKey, dateStr) {
+  const start = SLOTS[slotKey].start
+  const [startHour, startMinute] = start.split(':').map(Number)
+  const approxUtc = new Date(`${dateStr}T${start}:00Z`)
+  const lisbonParts = new Intl.DateTimeFormat('en-GB', {
+    timeZone: TZ,
+    hour: '2-digit',
+    minute: '2-digit',
+    hour12: false,
+  }).formatToParts(approxUtc)
+  const lisbonHour = Number(lisbonParts.find(part => part.type === 'hour').value)
+  const lisbonMinute = Number(lisbonParts.find(part => part.type === 'minute').value)
+  const offsetMs = (
+    (lisbonHour * 60 + lisbonMinute) - (startHour * 60 + startMinute)
+  ) * 60 * 1000
+
+  return new Date(approxUtc.getTime() - offsetMs)
+}
+
 export function isWeekday(dateStr) {
   const day = new Date(dateStr + 'T12:00:00').getDay()
   return day >= 1 && day <= 5
@@ -32,11 +52,15 @@ export function getActiveSlot(now = new Date()) {
   return null
 }
 
+export function getSlotBookingStatus(slotKey, dateStr, now = new Date()) {
+  if (!SLOTS[slotKey] || !isWeekday(dateStr)) return 'closed'
+
+  const msUntilSlot = getSlotStart(slotKey, dateStr).getTime() - now.getTime()
+  if (msUntilSlot <= 0) return 'closed'
+  if (msUntilSlot > BOOKING_WINDOW_MS) return 'too-early'
+  return 'open'
+}
+
 export function isSlotBookable(slotKey, dateStr, now = new Date()) {
-  if (!SLOTS[slotKey]) return false
-  if (!isWeekday(dateStr)) return false
-  const todayStr = now.toLocaleDateString('sv-SE', { timeZone: TZ })
-  if (dateStr < todayStr) return false
-  if (dateStr > todayStr) return true
-  return nowInLisbonMinutes(now) < toMinutes(SLOTS[slotKey].start)
+  return getSlotBookingStatus(slotKey, dateStr, now) === 'open'
 }

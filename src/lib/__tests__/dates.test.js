@@ -1,4 +1,4 @@
-import { getLocalDate, getWeekBounds, formatDay, getPreviousWeekBounds } from '../dates'
+import { getLocalDate, getWeekBounds, formatDay, getPreviousWeekBounds, getBookingWeekdays } from '../dates'
 
 describe('getLocalDate', () => {
   it('returns YYYY-MM-DD string in Europe/Lisbon timezone', () => {
@@ -41,5 +41,37 @@ describe('getPreviousWeekBounds', () => {
     const { start, end } = getPreviousWeekBounds('2026-06-03') // Wednesday of week Jun 1-7
     expect(start).toBe('2026-05-25') // previous Monday
     expect(end).toBe('2026-05-31')   // previous Sunday
+  })
+})
+
+describe('getBookingWeekdays', () => {
+  it('returns the current Monday to Friday during the week', () => {
+    expect(getBookingWeekdays('2026-06-03')).toEqual([
+      '2026-06-01',
+      '2026-06-02',
+      '2026-06-03',
+      '2026-06-04',
+      '2026-06-05',
+    ])
+  })
+
+  it('returns the next Monday to Friday on Saturday', () => {
+    expect(getBookingWeekdays('2026-06-06')).toEqual([
+      '2026-06-08',
+      '2026-06-09',
+      '2026-06-10',
+      '2026-06-11',
+      '2026-06-12',
+    ])
+  })
+
+  it('returns the next Monday to Friday on Sunday', () => {
+    expect(getBookingWeekdays('2026-06-07')).toEqual([
+      '2026-06-08',
+      '2026-06-09',
+      '2026-06-10',
+      '2026-06-11',
+      '2026-06-12',
+    ])
   })
 })
