@@ -1,24 +1,15 @@
 import { useState, useEffect } from 'react'
 import { getBookingsForDate, getCheckinsForDate } from '../../services/bookings'
-import { getLocalDate, getWeekBounds } from '../../lib/dates'
+import { getBookingWeekdays, getLocalDate } from '../../lib/dates'
 import { SLOTS, SLOT_ORDER } from '../../lib/slots'
 
 const PT_DAYS = ['Dom','Seg','Ter','Qua','Qui','Sex','Sáb']
 
-function getWeekdays(mondayStr) {
-  return Array.from({ length: 5 }, (_, i) => {
-    const d = new Date(mondayStr + 'T12:00:00')
-    d.setDate(d.getDate() + i)
-    return d.toLocaleDateString('sv-SE')
-  })
-}
-
 export default function TabBookings() {
   const today = getLocalDate()
-  const { start: monday } = getWeekBounds(today)
-  const weekdays = getWeekdays(monday)
+  const weekdays = getBookingWeekdays(today)
 
-  const [selectedDay, setSelectedDay] = useState(today)
+  const [selectedDay, setSelectedDay] = useState(() => weekdays.includes(today) ? today : weekdays[0])
   const [bookings, setBookings] = useState([])
   const [checkedInIds, setCheckedInIds] = useState(new Set())
   const [loading, setLoading] = useState(true)
