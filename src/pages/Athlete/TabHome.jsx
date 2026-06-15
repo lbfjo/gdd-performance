@@ -85,6 +85,7 @@ export default function TabHome({ athlete, onNavigate }) {
   const [editingWeight, setEditingWeight] = useState(false)
   const [lastWeight, setLastWeight] = useState(null)
   const [mealPlan, setMealPlan] = useState(null)
+  const [showAllMeals, setShowAllMeals] = useState(false)
 
   useEffect(() => {
     const goOnline = () => { setOffline(false); syncQueue() }
@@ -163,9 +164,10 @@ export default function TabHome({ athlete, onNavigate }) {
   const wt = weeklyTarget
 
   const today = new Date()
-  const dateStr = today.toLocaleDateString('pt-PT', {
+  const rawDate = today.toLocaleDateString('pt-PT', {
     weekday: 'long', day: 'numeric', month: 'long'
   })
+  const dateStr = rawDate.charAt(0).toUpperCase() + rawDate.slice(1).toLowerCase()
 
   const goal = mealPlan?.goal
 
@@ -350,45 +352,66 @@ export default function TabHome({ athlete, onNavigate }) {
       ))}
 
       {/* Refeições de Hoje */}
-      {mealPlan?.meals?.filter(m => m.type !== 'training').length > 0 && (
-        <div className="home-meals-section">
-          <div className="home-meals-header">
-            <div className="home-meals-title-row">
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-                <path d="M3 2v7c0 1.1.9 2 2 2h4a2 2 0 0 0 2-2V2M7 2v20M21 15V2v0a5 5 0 0 0-5 5v6c0 1.1.9 2 2 2h3m0 0v7" />
-              </svg>
-              <span>REFEIÇÕES DE HOJE</span>
+      {(() => {
+        const foodMeals = mealPlan?.meals?.filter(m => m.type !== 'training') || []
+        if (foodMeals.length === 0) return null
+        const PREVIEW = 3
+        const visibleMeals = showAllMeals ? foodMeals : foodMeals.slice(0, PREVIEW)
+        const remaining = foodMeals.length - PREVIEW
+        return (
+          <div className="home-meals-section">
+            <div className="home-meals-header">
+              <div className="home-meals-title-row">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M3 2v7c0 1.1.9 2 2 2h4a2 2 0 0 0 2-2V2M7 2v20M21 15V2v0a5 5 0 0 0-5 5v6c0 1.1.9 2 2 2h3m0 0v7" />
+                </svg>
+                <span>REFEIÇÕES DE HOJE</span>
+              </div>
+              {onNavigate && (
+                <button className="home-meals-link" onClick={() => onNavigate('nutrition')}>
+                  Ver todas &gt;
+                </button>
+              )}
             </div>
+
+            <div className="meal-cards">
+              {visibleMeals.map((m, i) => (
+                <div key={i} className="meal-card">
+                  <span className="meal-card-time">{m.time}</span>
+                  <div className="meal-card-body">
+                    <span className="meal-card-title">{m.title}</span>
+                    {m.description && <span className="meal-card-desc">{m.description}</span>}
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            {remaining > 0 && (
+              <button
+                onClick={() => setShowAllMeals(s => !s)}
+                style={{
+                  display: 'block', width: '100%', padding: '10px',
+                  background: 'none', border: 'none', borderTop: '1px solid var(--border)',
+                  fontFamily: 'Inter, sans-serif', fontSize: 13, fontWeight: 500,
+                  color: 'var(--muted)', cursor: 'pointer', marginTop: 4,
+                }}
+              >
+                {showAllMeals ? 'Mostrar menos' : `+ ${remaining} refeições`}
+              </button>
+            )}
+
             {onNavigate && (
-              <button className="home-meals-link" onClick={() => onNavigate('nutrition')}>
-                Ver todas &gt;
+              <button className="home-plan-link" onClick={() => onNavigate('nutrition')}>
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+                  <polyline points="14 2 14 8 20 8" />
+                </svg>
+                Ver plano alimentar completo &gt;
               </button>
             )}
           </div>
-
-          <div className="meal-cards">
-            {mealPlan.meals.filter(m => m.type !== 'training').map((m, i) => (
-              <div key={i} className="meal-card">
-                <span className="meal-card-time">{m.time}</span>
-                <div className="meal-card-body">
-                  <span className="meal-card-title">{m.title}</span>
-                  {m.description && <span className="meal-card-desc">{m.description}</span>}
-                </div>
-              </div>
-            ))}
-          </div>
-
-          {onNavigate && (
-            <button className="home-plan-link" onClick={() => onNavigate('nutrition')}>
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
-                <polyline points="14 2 14 8 20 8" />
-              </svg>
-              Ver plano alimentar completo &gt;
-            </button>
-          )}
-        </div>
-      )}
+        )
+      })()}
 
       {mealPlan?.notes && (
         <div className="home-notes-card">

@@ -94,13 +94,13 @@ export default function Athlete() {
         <button className="athlete-header-logout" onClick={handleLogout}>Sair</button>
       </div>
 
-      <div className="athlete-content">
+      <main className="athlete-content">
         {activeTab === 'home'     && <TabHome     athlete={athlete} onNavigate={setActiveTab} />}
         {activeTab === 'history'  && <TabHistory  athlete={athlete} />}
         {activeTab === 'ranking'    && <TabRanking   athlete={athlete} />}
         {activeTab === 'nutrition'  && <TabNutrition athlete={athlete} />}
         {activeTab === 'bookings'   && <TabBookings  athlete={athlete} />}
-      </div>
+      </main>
 
       <nav className="athlete-tabs">
         {TABS.map(t => (

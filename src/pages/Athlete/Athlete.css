@@ -68,7 +68,7 @@
   letter-spacing: 0.08em; text-transform: uppercase;
   gap: 4px;
 }
-.athlete-tab.active { color: var(--red); }
+.athlete-tab.active { color: var(--red-text); }
 .athlete-tab svg { width: 22px; height: 22px; stroke-width: 1.5; }
 
 /* ── Scrollable content area ── */
@@ -227,65 +227,14 @@
   color: var(--dark);
 }
 
-/* ── Month heatmap ── */
-.heatmap-wrap {
-  margin-bottom: 24px;
-  background: var(--card); border: 1px solid var(--border);
-  border-radius: 4px; padding: 14px 12px;
-}
-.heatmap-month-label {
-  font-family: 'Saira Condensed', sans-serif;
-  font-size: 14px; font-weight: 700;
-  letter-spacing: 0.08em; text-transform: uppercase;
-  color: var(--white); margin-bottom: 10px;
-}
-.heatmap-grid {
-  display: grid; grid-template-columns: repeat(7, 1fr);
-  gap: 3px;
-}
-.heatmap-weekday {
-  font-family: 'Saira Condensed', sans-serif;
-  font-size: 10px; font-weight: 700;
-  letter-spacing: 0.08em; text-transform: uppercase;
-  color: var(--muted); text-align: center; padding: 2px 0 6px;
-}
-.heatmap-cell {
-  aspect-ratio: 1;
-  border-radius: 3px;
-  display: flex; flex-direction: column;
-  align-items: center; justify-content: center;
-  position: relative; gap: 1px;
-}
-.heatmap-day-num {
-  font-family: 'Inter', sans-serif;
-  font-size: 11px; font-weight: 400;
-  line-height: 1; color: var(--muted);
-}
-/* Past weekday without check-in */
-.heatmap-past  { background: var(--card2); }
-.heatmap-past .heatmap-day-num { color: rgba(255,255,255,0.35); }
-/* Weekend without check-in */
-.heatmap-weekend { background: rgba(26,32,48,0.6); }
-.heatmap-weekend .heatmap-day-num { color: rgba(255,255,255,0.2); }
-/* Future day */
-.heatmap-future { background: rgba(26,32,48,0.15); }
-.heatmap-future .heatmap-day-num { color: rgba(255,255,255,0.12); }
-/* Checked day */
-.heatmap-checked {
-  background: rgba(200,16,46,0.8);
-}
-.heatmap-checked .heatmap-day-num { color: var(--white); font-weight: 600; }
-.heatmap-double { background: var(--amber); }
-.heatmap-double .heatmap-day-num { color: #0D0F14; font-weight: 700; }
-/* Today border */
-.heatmap-today { outline: 1.5px solid var(--red); outline-offset: -1px; }
-.heatmap-checked.heatmap-today { outline-color: rgba(255,255,255,0.5); }
-.heatmap-double.heatmap-today { outline-color: rgba(255,255,255,0.5); }
-/* White dot for checked days */
-.heatmap-dot {
-  display: block; width: 4px; height: 4px; border-radius: 50%;
+/* Calendar day states */
+.cal-day.weekend { color: rgba(255,255,255,0.25); }
+.cal-day.future { color: rgba(255,255,255,0.15); }
+.cal-day.past-miss { color: rgba(255,255,255,0.4); }
+.cal-dot {
+  position: absolute; bottom: 3px;
+  width: 4px; height: 4px; border-radius: 50%;
   background: rgba(255,255,255,0.9);
-  flex-shrink: 0;
 }
 
 .history-section-title {
@@ -536,7 +485,7 @@
 .home-date {
   font-family: 'Inter', sans-serif;
   font-size: 13px; color: var(--muted);
-  margin-top: 2px; text-transform: capitalize;
+  margin-top: 2px;
 }
 
 /* ── Redesigned Home — Peso de Hoje ── */
@@ -681,7 +630,7 @@
   background: none; border: none; padding: 0;
   font-family: 'Inter', sans-serif;
   font-size: 12px; font-weight: 500;
-  color: var(--red); cursor: pointer;
+  color: var(--red-text); cursor: pointer;
   transition: opacity 0.15s;
 }
 .home-meals-link:hover { opacity: 0.8; }
@@ -713,7 +662,7 @@
 .meal-card-time {
   font-family: 'Saira Condensed', sans-serif;
   font-size: 15px; font-weight: 700;
-  color: var(--red);
+  color: var(--red-text);
   min-width: 50px; flex-shrink: 0;
   padding-top: 1px;
 }

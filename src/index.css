@@ -3,13 +3,14 @@
 :root {
   --red:    #C8102E;
   --red-dark: #A00D24;
+  --red-text: #EE4155;
   --navy:   #07183A;
   --dark:   #0D0F14;
   --card:   #13181F;
   --card2:  #1A2030;
   --border: rgba(255,255,255,0.07);
   --gray:   #D9DDE3;
-  --muted:  #6B7280;
+  --muted:  #9CA3AF;
   --white:  #FFFFFF;
   --green:  #00C853;
   --green-bg: rgba(0,200,83,0.12);

@@ -21,59 +21,6 @@ function toDateStr(year, month, day) {
   return `${year}-${String(month + 1).padStart(2,'0')}-${String(day).padStart(2,'0')}`
 }
 
-// ---------- Month heatmap (current month only, no navigation) ----------
-function MonthHeatmap({ checkins, today }) {
-  const now   = new Date()
-  const year  = now.getFullYear()
-  const month = now.getMonth()
-  const cells = getCalendarDays(year, month)
-
-  const checkinCount = {}
-  checkins.forEach(c => { checkinCount[c.date] = (checkinCount[c.date] || 0) + 1 })
-  const monthLabel   = `${PT_MONTHS[month]} ${year}`.toUpperCase()
-
-  return (
-    <div className="heatmap-wrap">
-      <p className="heatmap-month-label">{monthLabel}</p>
-      <div className="heatmap-grid">
-        {PT_WEEKDAYS_SHORT.map(d => (
-          <div key={d} className="heatmap-weekday">{d}</div>
-        ))}
-        {cells.map((day, i) => {
-          if (!day) return <div key={`e${i}`} />
-
-          const dateStr   = toDateStr(year, month, day)
-          const count     = checkinCount[dateStr] ?? 0
-          const checked   = count > 0
-          const isDouble  = count >= 2
-          const isToday   = dateStr === today
-          const isFuture  = dateStr > today
-
-          // Day-of-week: 0=Mon…6=Sun (after Monday-first adjustment)
-          const rawDow = new Date(dateStr + 'T12:00:00').getDay()
-          const dow    = rawDow === 0 ? 6 : rawDow - 1
-          const isWeekend = dow >= 5
-
-          let cellClass = 'heatmap-cell'
-          if (isDouble)       cellClass += ' heatmap-double'
-          else if (checked)   cellClass += ' heatmap-checked'
-          else if (isFuture)  cellClass += ' heatmap-future'
-          else if (isWeekend) cellClass += ' heatmap-weekend'
-          else                cellClass += ' heatmap-past'
-          if (isToday)        cellClass += ' heatmap-today'
-
-          return (
-            <div key={dateStr} className={cellClass}>
-              <span className="heatmap-day-num">{day}</span>
-              {checked && <span className="heatmap-dot" />}
-            </div>
-          )
-        })}
-      </div>
-    </div>
-  )
-}
-
 export default function TabHistory({ athlete }) {
   const [checkins, setCheckins] = useState([])
   const [loading, setLoading]   = useState(true)
@@ -119,11 +66,6 @@ export default function TabHistory({ athlete }) {
 
   return (
     <>
-      {/* ── Heatmap for current month ── */}
-      <MonthHeatmap checkins={checkins} today={today} />
-
-      {/* ── Navigable calendar ── */}
-
       {/* Calendar header */}
       <div className="cal-header">
         <button className="cal-nav" onClick={prevMonth}>‹</button>
@@ -139,22 +81,28 @@ export default function TabHistory({ athlete }) {
         ))}
         {calDays.map((day, i) => {
           if (!day) return <div key={`e${i}`} />
-          const dateStr = toDateStr(viewYear, viewMonth, day)
-          const count   = checkinCount[dateStr] ?? 0
-          const checked = count > 0
-          const isToday = dateStr === today
+          const dateStr  = toDateStr(viewYear, viewMonth, day)
+          const count    = checkinCount[dateStr] ?? 0
+          const checked  = count > 0
+          const isDouble = count >= 2
+          const isToday  = dateStr === today
+          const isFuture = dateStr > today
+          const rawDow   = new Date(dateStr + 'T12:00:00').getDay()
+          const dow      = rawDow === 0 ? 6 : rawDow - 1
+          const isWeekend = dow >= 5
+
+          let cellClass = 'cal-day has-number'
+          if (isDouble)       cellClass += ' checked double'
+          else if (checked)   cellClass += ' checked'
+          else if (isFuture)  cellClass += ' future'
+          else if (isWeekend) cellClass += ' weekend'
+          else                cellClass += ' past-miss'
+          if (isToday)        cellClass += ' today-marker'
+
           return (
-            <div
-              key={dateStr}
-              className={[
-                'cal-day',
-                'has-number',
-                count >= 2  ? 'checked double' : checked ? 'checked' : '',
-                isToday && !checked ? 'today-marker' : '',
-                isToday &&  checked ? 'today-marker checked' : '',
-              ].join(' ').trim()}
-            >
+            <div key={dateStr} className={cellClass}>
               {day}
+              {checked && <span className="cal-dot" />}
             </div>
           )
         })}
