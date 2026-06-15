@@ -31,7 +31,7 @@ function WeightPanel({ athlete }) {
 
   async function handleSubmit(e) {
     e.preventDefault()
-    const val = parseFloat(weight)
+    const val = parseFloat(weight.replace(',', '.'))
     if (!val || val < 20 || val > 300) return
     setSaving(true)
     setError('')
@@ -66,15 +66,17 @@ function WeightPanel({ athlete }) {
         <form className="nutri-weight-form" onSubmit={handleSubmit}>
           <div className="nutri-weight-input-wrap">
             <input
-              type="number"
-              step="0.1"
-              min="20"
-              max="300"
+              type="text"
+              inputMode="decimal"
+              pattern="[0-9]*[.,]?[0-9]*"
               className="nutri-weight-input"
               placeholder="Ex: 82.5"
               value={weight}
-              onChange={e => { setWeight(e.target.value); setError('') }}
-              inputMode="decimal"
+              onChange={e => {
+                const v = e.target.value.replace(/[^0-9.,]/g, '')
+                setWeight(v)
+                setError('')
+              }}
               autoFocus={editing}
             />
             <span className="nutri-weight-unit">kg</span>
