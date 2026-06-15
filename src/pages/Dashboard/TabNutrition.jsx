@@ -1,6 +1,12 @@
 import { useState, useEffect, useCallback } from 'react'
 import { getAthletes } from '../../services/athletes'
 import { getWeightLogsForWeek } from '../../services/nutrition'
+import {
+  createNutritionSlots,
+  getUpcomingNutritionSlots,
+  removeNutritionSlot,
+  reopenNutritionSlot,
+} from '../../services/nutritionAppointments'
 import { getLocalDate, getWeekBounds, getPreviousWeekBounds } from '../../lib/dates'
 import './TabNutrition.css'
 
@@ -12,7 +18,7 @@ function getWeekDays(start) {
   })
 }
 
-export default function TabNutrition() {
+function WeightGrid() {
   const [athletes, setAthletes] = useState([])
   const [weightsByAthlete, setWeightsByAthlete] = useState({})
   const [weekStart, setWeekStart] = useState(() => getWeekBounds(getLocalDate()).start)
@@ -122,6 +128,192 @@ export default function TabNutrition() {
         <div className="legend-item"><div className="legend-dot" style={{ background: 'var(--green)' }} /> Pesou</div>
         <div className="legend-item"><div className="legend-dot" style={{ background: 'var(--card2)', border: '1px solid var(--border)' }} /> Sem registo</div>
       </div>
+    </>
+  )
+}
+
+function formatAppointmentDate(dateStr) {
+  return new Date(dateStr + 'T12:00:00').toLocaleDateString('pt-PT', {
+    weekday: 'long',
+    day: 'numeric',
+    month: 'long',
+  })
+}
+
+function AppointmentManager() {
+  const [date, setDate] = useState(getLocalDate())
+  const [startTime, setStartTime] = useState('09:00')
+  const [endTime, setEndTime] = useState('12:00')
+  const [intervalMinutes, setIntervalMinutes] = useState('15')
+  const [slots, setSlots] = useState([])
+  const [loading, setLoading] = useState(true)
+  const [saving, setSaving] = useState(false)
+  const [working, setWorking] = useState(null)
+  const [message, setMessage] = useState('')
+  const [error, setError] = useState('')
+
+  async function load() {
+    const upcoming = await getUpcomingNutritionSlots()
+    setSlots(upcoming)
+    setError('')
+    setLoading(false)
+  }
+
+  useEffect(() => {
+    load().catch(() => {
+      setError('Não foi possível carregar as vagas.')
+      setLoading(false)
+    })
+  }, [])
+
+  async function handleCreate(e) {
+    e.preventDefault()
+    setSaving(true)
+    setError('')
+    setMessage('')
+    try {
+      const count = await createNutritionSlots({
+        date,
+        startTime,
+        endTime,
+        intervalMinutes: Number(intervalMinutes),
+      })
+      setMessage(count > 0
+        ? `${count} vaga${count !== 1 ? 's' : ''} criada${count !== 1 ? 's' : ''}.`
+        : 'Esses horários já estavam criados.')
+      await load()
+    } catch {
+      setError('Verifica a data, as horas e o intervalo.')
+    } finally {
+      setSaving(false)
+    }
+  }
+
+  async function handleRemove(slot) {
+    setWorking(slot.id)
+    setError('')
+    try {
+      await removeNutritionSlot(slot.id)
+      await load()
+    } catch {
+      setError('Só é possível remover vagas ainda livres.')
+    } finally {
+      setWorking(null)
+    }
+  }
+
+  async function handleReopen(slot) {
+    const confirmed = window.confirm(`Libertar a vaga das ${slot.time} de ${slot.athleteName}?`)
+    if (!confirmed) return
+    setWorking(slot.id)
+    setError('')
+    try {
+      await reopenNutritionSlot(slot.id)
+      await load()
+    } catch {
+      setError('Não foi possível libertar esta vaga.')
+    } finally {
+      setWorking(null)
+    }
+  }
+
+  const grouped = slots.reduce((groups, slot) => {
+    if (!groups[slot.date]) groups[slot.date] = []
+    groups[slot.date].push(slot)
+    return groups
+  }, {})
+
+  return (
+    <>
+      <form className="staff-nutri-slot-form" onSubmit={handleCreate}>
+        <div className="staff-nutri-form-title">Abrir vagas</div>
+        <div className="staff-nutri-form-grid">
+          <label>
+            Data
+            <input type="date" min={getLocalDate()} value={date} onChange={e => setDate(e.target.value)} required />
+          </label>
+          <label>
+            Início
+            <input type="time" value={startTime} onChange={e => setStartTime(e.target.value)} required />
+          </label>
+          <label>
+            Fim
+            <input type="time" value={endTime} onChange={e => setEndTime(e.target.value)} required />
+          </label>
+          <label>
+            Intervalo
+            <select value={intervalMinutes} onChange={e => setIntervalMinutes(e.target.value)}>
+              <option value="15">15 min</option>
+              <option value="30">30 min</option>
+              <option value="45">45 min</option>
+              <option value="60">60 min</option>
+            </select>
+          </label>
+        </div>
+        <button className="btn-primary" type="submit" disabled={saving}>
+          {saving ? 'A criar…' : 'Criar vagas'}
+        </button>
+        {message && <p className="staff-nutri-message">{message}</p>}
+        {error && <p className="error-banner">{error}</p>}
+      </form>
+
+      <div className="staff-nutri-list-title">Próximas vagas</div>
+      {loading ? (
+        <p className="loading-state">A carregar…</p>
+      ) : error ? (
+        null
+      ) : Object.keys(grouped).length === 0 ? (
+        <div className="staff-nutri-empty">Ainda não existem vagas futuras.</div>
+      ) : (
+        Object.entries(grouped).map(([slotDate, dateSlots]) => (
+          <section key={slotDate} className="staff-nutri-day">
+            <h3>{formatAppointmentDate(slotDate)}</h3>
+            <div className="staff-nutri-slots">
+              {dateSlots.map(slot => (
+                <div key={slot.id} className={`staff-nutri-slot ${slot.status}`}>
+                  <span className="staff-nutri-time">{slot.time}</span>
+                  <span className="staff-nutri-athlete">
+                    {slot.status === 'booked' ? slot.athleteName : 'Livre'}
+                  </span>
+                  {slot.status === 'available' ? (
+                    <button onClick={() => handleRemove(slot)} disabled={working === slot.id}>
+                      {working === slot.id ? '…' : 'Remover'}
+                    </button>
+                  ) : (
+                    <button onClick={() => handleReopen(slot)} disabled={working === slot.id}>
+                      {working === slot.id ? '…' : 'Libertar'}
+                    </button>
+                  )}
+                </div>
+              ))}
+            </div>
+          </section>
+        ))
+      )}
+    </>
+  )
+}
+
+export default function TabNutrition() {
+  const [section, setSection] = useState('weights')
+
+  return (
+    <>
+      <div className="dashboard-subtabs">
+        <button
+          className={section === 'weights' ? 'active' : ''}
+          onClick={() => setSection('weights')}
+        >
+          Pesagens
+        </button>
+        <button
+          className={section === 'appointments' ? 'active' : ''}
+          onClick={() => setSection('appointments')}
+        >
+          Consultas
+        </button>
+      </div>
+      {section === 'weights' ? <WeightGrid /> : <AppointmentManager />}
     </>
   )
 }

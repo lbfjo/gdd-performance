@@ -5,9 +5,9 @@ import { getConfig } from '../../services/config'
 import { getLocalDate } from '../../lib/dates'
 import { getActiveSlot, SLOTS } from '../../lib/slots'
 
-const RESET_SECONDS = 4
+const RESET_SECONDS = 8
 
-export default function StepConfirm({ athlete, onReset }) {
+export default function StepConfirm({ athlete, onReset, onLogWeight }) {
   const [count, setCount]               = useState(null)
   const [weeklyTarget, setWeeklyTarget] = useState(null)
   const [bookedSlot, setBookedSlot]     = useState(null)
@@ -87,7 +87,8 @@ export default function StepConfirm({ athlete, onReset }) {
       )}
 
       <div className="confirm-continue">
-        <button className="btn-primary" onClick={onReset}>Continuar</button>
+        <button className="btn-primary" onClick={onLogWeight}>Registar peso →</button>
+        <button className="btn-secondary" onClick={onReset}>Concluir</button>
       </div>
       <p className="confirm-reset">Reinicia automaticamente em {seconds}s</p>
     </div>

@@ -22,7 +22,9 @@ service cloud.firestore {
 
     match /config/{doc} {
       allow read: if true;
-      allow write: if request.resource.data.keys().hasOnly(['staffPin','weeklyTarget'])
+      allow write: if request.resource.data.keys().hasOnly([
+                     'staffPin','weeklyTarget','nutritionAppointmentsEnabled'
+                   ])
                    && request.resource.data.staffPin is string;
     }
 
@@ -33,6 +35,18 @@ service cloud.firestore {
                     && request.resource.data.date is string
                     && request.resource.data.weight is number;
       allow update: if request.resource.data.weight is number;
+    }
+
+    match /nutrition_slots/{id} {
+      allow read: if true;
+      allow create: if request.resource.data.keys().hasAll([
+                      'date','time','status','athleteId','athleteName','createdAt','bookedAt'
+                    ])
+                    && request.resource.data.date is string
+                    && request.resource.data.time is string
+                    && request.resource.data.status == 'available';
+      allow update: if request.resource.data.status in ['available','booked'];
+      allow delete: if resource.data.status == 'available';
     }
 
     match /bookings/{id} {

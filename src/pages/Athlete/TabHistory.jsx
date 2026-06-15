@@ -28,7 +28,8 @@ function MonthHeatmap({ checkins, today }) {
   const month = now.getMonth()
   const cells = getCalendarDays(year, month)
 
-  const checkinDates = new Set(checkins.map(c => c.date))
+  const checkinCount = {}
+  checkins.forEach(c => { checkinCount[c.date] = (checkinCount[c.date] || 0) + 1 })
   const monthLabel   = `${PT_MONTHS[month]} ${year}`.toUpperCase()
 
   return (
@@ -42,7 +43,9 @@ function MonthHeatmap({ checkins, today }) {
           if (!day) return <div key={`e${i}`} />
 
           const dateStr   = toDateStr(year, month, day)
-          const checked   = checkinDates.has(dateStr)
+          const count     = checkinCount[dateStr] ?? 0
+          const checked   = count > 0
+          const isDouble  = count >= 2
           const isToday   = dateStr === today
           const isFuture  = dateStr > today
 
@@ -52,11 +55,12 @@ function MonthHeatmap({ checkins, today }) {
           const isWeekend = dow >= 5
 
           let cellClass = 'heatmap-cell'
-          if (checked)      cellClass += ' heatmap-checked'
-          else if (isFuture) cellClass += ' heatmap-future'
+          if (isDouble)       cellClass += ' heatmap-double'
+          else if (checked)   cellClass += ' heatmap-checked'
+          else if (isFuture)  cellClass += ' heatmap-future'
           else if (isWeekend) cellClass += ' heatmap-weekend'
-          else              cellClass += ' heatmap-past'
-          if (isToday)      cellClass += ' heatmap-today'
+          else                cellClass += ' heatmap-past'
+          if (isToday)        cellClass += ' heatmap-today'
 
           return (
             <div key={dateStr} className={cellClass}>
@@ -84,7 +88,8 @@ export default function TabHistory({ athlete }) {
       .finally(() => setLoading(false))
   }, [athlete.id])
 
-  const checkinDates = new Set(checkins.map(c => c.date))
+  const checkinCount = {}
+  checkins.forEach(c => { checkinCount[c.date] = (checkinCount[c.date] || 0) + 1 })
   const calDays = getCalendarDays(viewYear, viewMonth)
 
   function prevMonth() {
@@ -102,9 +107,13 @@ export default function TabHistory({ athlete }) {
 
   // Sessions in viewed month for list
   const monthStr = `${viewYear}-${String(viewMonth + 1).padStart(2,'0')}`
-  const monthCheckins = checkins
-    .filter(c => c.date.startsWith(monthStr))
-    .sort((a, b) => b.date.localeCompare(a.date))
+  const monthByDate = {}
+  checkins.filter(c => c.date.startsWith(monthStr)).forEach(c => {
+    monthByDate[c.date] = (monthByDate[c.date] || 0) + 1
+  })
+  const monthCheckins = Object.entries(monthByDate)
+    .sort(([a], [b]) => b.localeCompare(a))
+    .map(([date, count]) => ({ date, count }))
 
   if (loading) return <p className="loading-state">A carregar…</p>
 
@@ -131,7 +140,8 @@ export default function TabHistory({ athlete }) {
         {calDays.map((day, i) => {
           if (!day) return <div key={`e${i}`} />
           const dateStr = toDateStr(viewYear, viewMonth, day)
-          const checked = checkinDates.has(dateStr)
+          const count   = checkinCount[dateStr] ?? 0
+          const checked = count > 0
           const isToday = dateStr === today
           return (
             <div
@@ -139,7 +149,7 @@ export default function TabHistory({ athlete }) {
               className={[
                 'cal-day',
                 'has-number',
-                checked     ? 'checked'      : '',
+                count >= 2  ? 'checked double' : checked ? 'checked' : '',
                 isToday && !checked ? 'today-marker' : '',
                 isToday &&  checked ? 'today-marker checked' : '',
               ].join(' ').trim()}
@@ -155,16 +165,18 @@ export default function TabHistory({ athlete }) {
         <>
           <p className="history-section-title">Sessões — {PT_MONTHS[viewMonth]}</p>
           <div className="history-list">
-            {monthCheckins.map(c => {
-              const d = new Date(c.date + 'T12:00:00')
+            {monthCheckins.map(({ date, count }) => {
+              const d = new Date(date + 'T12:00:00')
               return (
-                <div key={c.id} className="history-item">
+                <div key={date} className="history-item">
                   <div>
                     <p className="history-date">
                       {d.toLocaleDateString('pt-PT', { weekday: 'long', day: 'numeric', month: 'long' })}
                     </p>
                   </div>
-                  <span className="pill pill-green">Check-in</span>
+                  <span className={`pill ${count >= 2 ? 'pill-amber' : 'pill-green'}`}>
+                    {count >= 2 ? 'Sessão dupla' : 'Check-in'}
+                  </span>
                 </div>
               )
             })}

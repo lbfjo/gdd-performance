@@ -13,6 +13,7 @@ export default function CheckIn() {
   const [step, setStep] = useState('name')
   const [athlete, setAthlete] = useState(null)
   const [submitting, setSubmitting] = useState(false)
+  const [todayCount, setTodayCount] = useState(0)
 
   function handleSelectAthlete(a) { setAthlete(a); setStep('pin') }
 
@@ -25,13 +26,18 @@ export default function CheckIn() {
     setStep('confirm')
   }
 
-  function handleAlreadyCheckedIn() { setStep('already') }
-  function handleReset() { setAthlete(null); setStep('name') }
+  function handleAlreadyCheckedIn(count) { setTodayCount(count); setStep('already') }
+  function handleReset() { setAthlete(null); setTodayCount(0); setStep('name') }
 
   function goToPersonalArea() {
     // PIN was already verified — auto-login to athlete area
     localStorage.setItem(ATHLETE_KEY, JSON.stringify({ id: athlete.id, name: athlete.name }))
     navigate('/athlete')
+  }
+
+  function goToWeight() {
+    localStorage.setItem(ATHLETE_KEY, JSON.stringify({ id: athlete.id, name: athlete.name }))
+    navigate('/athlete', { state: { initialTab: 'nutrition' } })
   }
 
   return (
@@ -57,7 +63,9 @@ export default function CheckIn() {
           loading={submitting}
         />
       )}
-      {step === 'confirm' && athlete && <StepConfirm athlete={athlete} onReset={handleReset} />}
+      {step === 'confirm' && athlete && (
+        <StepConfirm athlete={athlete} onReset={handleReset} onLogWeight={goToWeight} />
+      )}
       {step === 'already' && (
         <div className="already-screen">
           <div className="already-icon" style={{ fontSize: 44 }}>✓</div>
@@ -67,12 +75,29 @@ export default function CheckIn() {
           <p className="already-sub">
             {athlete?.name.split(' ')[0]}, o teu treino de hoje já está registado.
           </p>
+          {todayCount === 1 && (
+            <button
+              className="btn-primary"
+              onClick={handleConfirmCheckin}
+              disabled={submitting}
+              style={{ maxWidth: 280, marginTop: 8 }}
+            >
+              {submitting ? 'A registar…' : 'Registar sessão dupla'}
+            </button>
+          )}
           <button
             className="btn-primary"
+            onClick={goToWeight}
+            style={{ maxWidth: 280, marginTop: 8 }}
+          >
+            Registar peso →
+          </button>
+          <button
+            className="btn-secondary"
             onClick={goToPersonalArea}
             style={{ maxWidth: 280, marginTop: 8 }}
           >
-            Ver o meu perfil →
+            Ver o meu perfil
           </button>
           <button
             className="btn-secondary"

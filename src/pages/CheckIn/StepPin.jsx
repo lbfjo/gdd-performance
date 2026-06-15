@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react'
 import PinPad from '../../components/PinPad'
 import Logo from '../../components/Logo'
 import { verifyAthletePin } from '../../services/athletes'
-import { hasCheckedInToday } from '../../services/checkins'
+import { getCheckinsCountForAthleteToday } from '../../services/checkins'
 import { recordFailedAttempt, isLockedOut, getRemainingSeconds, clearAttempts } from '../../lib/rateLimit'
 
 export default function StepPin({ athlete, onSuccess, onAlreadyCheckedIn, onBack }) {
@@ -40,8 +40,8 @@ export default function StepPin({ athlete, onSuccess, onAlreadyCheckedIn, onBack
         return
       }
       clearAttempts(athlete.id)
-      const alreadyIn = await hasCheckedInToday(athlete.id)
-      if (alreadyIn) { onAlreadyCheckedIn(); return }
+      const todayCount = await getCheckinsCountForAthleteToday(athlete.id)
+      if (todayCount > 0) { onAlreadyCheckedIn(todayCount); return }
       onSuccess()
     } catch {
       setPinError(true)

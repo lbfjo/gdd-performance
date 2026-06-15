@@ -406,6 +406,9 @@
 .confirm-continue {
   width: 100%; max-width: 320px;
   margin-bottom: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
 }
 
 .confirm-reset {

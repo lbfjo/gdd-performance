@@ -532,6 +532,83 @@
   font-size: 16px; font-weight: 700; color: var(--white);
 }
 
+.nutri-subtabs {
+  display: grid; grid-template-columns: 1fr 1fr;
+  background: var(--card); border: 1px solid var(--border);
+  border-radius: 6px; padding: 4px; margin-bottom: 20px;
+}
+.nutri-subtabs button {
+  border: none; border-radius: 4px; padding: 10px;
+  background: transparent; color: var(--muted);
+  font-family: 'Saira Condensed', sans-serif;
+  font-size: 13px; font-weight: 700;
+  letter-spacing: 0.08em; text-transform: uppercase;
+  cursor: pointer;
+}
+.nutri-subtabs button.active {
+  background: var(--red); color: var(--white);
+}
+.nutri-appointments-intro {
+  display: flex; flex-direction: column; gap: 4px;
+  margin-bottom: 18px;
+}
+.nutri-appointments-intro strong {
+  font-family: 'Saira Condensed', sans-serif;
+  font-size: 20px; text-transform: uppercase; color: var(--white);
+}
+.nutri-appointments-intro span {
+  font-family: 'Inter', sans-serif;
+  font-size: 13px; line-height: 1.5; color: var(--muted);
+}
+.nutri-empty-state {
+  padding: 24px 18px; background: var(--card);
+  border: 1px solid var(--border); border-radius: 6px;
+  color: var(--muted); text-align: center;
+  font-family: 'Inter', sans-serif; font-size: 13px;
+}
+.nutri-appointment-day { margin-bottom: 22px; }
+.nutri-appointment-day h3 {
+  margin-bottom: 10px; color: var(--white);
+  font-family: 'Saira Condensed', sans-serif;
+  font-size: 16px; text-transform: capitalize;
+}
+.nutri-appointment-slots {
+  display: grid; grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+}
+.nutri-appointment-slot {
+  min-height: 82px; padding: 12px;
+  display: flex; flex-direction: column;
+  align-items: stretch; justify-content: space-between;
+  background: var(--card); border: 1px solid var(--border);
+  border-radius: 6px;
+}
+.nutri-appointment-slot.mine {
+  background: var(--green-bg); border-color: rgba(0,200,83,0.35);
+}
+.nutri-appointment-slot.unavailable { opacity: 0.42; }
+.nutri-appointment-time {
+  font-family: 'Saira Condensed', sans-serif;
+  font-size: 22px; font-weight: 700; color: var(--white);
+}
+.nutri-appointment-book,
+.nutri-appointment-cancel {
+  border: none; border-radius: 4px; padding: 7px 8px;
+  font-family: 'Saira Condensed', sans-serif;
+  font-size: 12px; font-weight: 700;
+  letter-spacing: 0.06em; text-transform: uppercase;
+  cursor: pointer;
+}
+.nutri-appointment-book { background: var(--red); color: var(--white); }
+.nutri-appointment-cancel {
+  background: transparent; color: var(--green);
+  border: 1px solid rgba(0,200,83,0.35);
+}
+.nutri-appointment-status {
+  font-family: 'Inter', sans-serif;
+  font-size: 11px; color: var(--muted);
+}
+
 /* ── Desktop responsive ── */
 @media (min-width: 768px) {
   .athlete-page    { max-width: 720px; }

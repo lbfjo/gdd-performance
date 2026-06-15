@@ -49,8 +49,8 @@ export default function TabGrid() {
     ])
     const map = {}
     checkins.forEach(c => {
-      if (!map[c.athleteId]) map[c.athleteId] = new Set()
-      map[c.athleteId].add(c.date)
+      if (!map[c.athleteId]) map[c.athleteId] = {}
+      map[c.athleteId][c.date] = (map[c.athleteId][c.date] || 0) + 1
     })
     setAthletes(aths)
     setCheckinsByAthlete(map)
@@ -64,18 +64,21 @@ export default function TabGrid() {
   const currentWeekStart = getWeekBounds(today).start
   const isCurrentWeek = weekStart === currentWeekStart
 
+  const weekTotal = (athleteId) =>
+    Object.values(checkinsByAthlete[athleteId] ?? {}).reduce((s, n) => s + n, 0)
+
   // Summary stat computations (only meaningful for current week)
-  const sessionsHoje = athletes.filter(a => checkinsByAthlete[a.id]?.has(today)).length
+  const sessionsHoje = athletes.reduce((sum, a) => sum + (checkinsByAthlete[a.id]?.[today] ?? 0), 0)
 
   const totalAthletes = athletes.length
   const athletesOnTarget = weeklyTarget != null
-    ? athletes.filter(a => (checkinsByAthlete[a.id]?.size ?? 0) >= weeklyTarget).length
+    ? athletes.filter(a => weekTotal(a.id) >= weeklyTarget).length
     : null
   const taxaSemanal = weeklyTarget != null && totalAthletes > 0
     ? Math.round((athletesOnTarget / totalAthletes) * 100)
     : null
 
-  const totalSessions = athletes.reduce((sum, a) => sum + (checkinsByAthlete[a.id]?.size ?? 0), 0)
+  const totalSessions = athletes.reduce((sum, a) => sum + weekTotal(a.id), 0)
   const presencaMedia = totalAthletes > 0
     ? (totalSessions / totalAthletes).toFixed(1)
     : '0.0'
@@ -132,11 +135,16 @@ export default function TabGrid() {
               {athletes.map(a => (
                 <tr key={a.id}>
                   <td className="grid-name" title={a.name}>{a.name.split(' ')[0]} {a.name.split(' ').slice(-1)}</td>
-                  {days.map(d => (
-                    <td key={d} style={{ textAlign: 'center' }}>
-                      <div className={`grid-cell${checkinsByAthlete[a.id]?.has(d) ? ' checked' : ''}`} />
-                    </td>
-                  ))}
+                  {days.map(d => {
+                    const count = checkinsByAthlete[a.id]?.[d] ?? 0
+                    return (
+                      <td key={d} style={{ textAlign: 'center' }}>
+                        <div className={`grid-cell${count >= 2 ? ' double' : count === 1 ? ' checked' : ''}`}>
+                          {count >= 2 && <span className="grid-cell-badge">2</span>}
+                        </div>
+                      </td>
+                    )
+                  })}
                 </tr>
               ))}
             </tbody>
@@ -146,6 +154,7 @@ export default function TabGrid() {
 
       <div className="grid-legend">
         <div className="legend-item"><div className="legend-dot" style={{ background: 'var(--green)' }} /> Check-in</div>
+        <div className="legend-item"><div className="legend-dot" style={{ background: 'var(--amber)' }} /> Sessão dupla</div>
         <div className="legend-item"><div className="legend-dot" style={{ background: 'var(--card2)', border: '1px solid var(--border)' }} /> Ausente</div>
       </div>
 

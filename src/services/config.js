@@ -11,14 +11,31 @@ export async function verifyStaffPin(pin) {
 
 export async function getConfig() {
   const snap = await getDoc(doc(db, 'config', 'app'))
-  if (!snap.exists()) return { weeklyTarget: null }
+  if (!snap.exists()) {
+    return {
+      weeklyTarget: null,
+      nutritionAppointmentsEnabled: false,
+    }
+  }
   const data = snap.data()
-  return { weeklyTarget: data.weeklyTarget ?? null }
+  return {
+    weeklyTarget: data.weeklyTarget ?? null,
+    nutritionAppointmentsEnabled: data.nutritionAppointmentsEnabled === true,
+  }
 }
 
 export async function setWeeklyTarget(target) {
   const ref = doc(db, 'config', 'app')
   const snap = await getDoc(ref)
   if (!snap.exists()) throw new Error('Config doc not initialised — set staffPin first')
-  await setDoc(ref, { ...snap.data(), weeklyTarget: target })
+  await setDoc(ref, { weeklyTarget: target }, { merge: true })
+}
+
+export async function setNutritionAppointmentsEnabled(enabled) {
+  const ref = doc(db, 'config', 'app')
+  const snap = await getDoc(ref)
+  if (!snap.exists()) throw new Error('Config doc not initialised — set staffPin first')
+  await setDoc(ref, {
+    nutritionAppointmentsEnabled: enabled === true,
+  }, { merge: true })
 }

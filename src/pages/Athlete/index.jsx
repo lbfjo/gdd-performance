@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useLocation, useNavigate } from 'react-router-dom'
 import AthleteLogin from './AthleteLogin'
 import TabHome from './TabHome'
 import TabHistory from './TabHistory'
@@ -60,10 +60,17 @@ const TABS = [
 
 export default function Athlete() {
   const navigate = useNavigate()
+  const location = useLocation()
   const [athlete, setAthlete] = useState(() => {
     try { return JSON.parse(localStorage.getItem(ATHLETE_KEY)) } catch { return null }
   })
-  const [activeTab, setActiveTab] = useState('home')
+  const [activeTab, setActiveTab] = useState(() => location.state?.initialTab ?? 'home')
+
+  useEffect(() => {
+    if (location.state?.initialTab) {
+      navigate(location.pathname, { replace: true, state: null })
+    }
+  }, [location.pathname, location.state, navigate])
 
   function handleLogin(a) {
     localStorage.setItem(ATHLETE_KEY, JSON.stringify(a))

@@ -26,3 +26,103 @@
 .weight-chart-svg {
   width: 100%; height: auto; display: block;
 }
+.dashboard-subtabs {
+  display: inline-flex;
+  padding: 4px; margin-bottom: 22px;
+  background: var(--card); border: 1px solid var(--border);
+  border-radius: 6px;
+}
+.dashboard-subtabs button {
+  min-width: 120px; padding: 9px 16px;
+  border: none; border-radius: 4px;
+  background: transparent; color: var(--muted);
+  font-family: 'Saira Condensed', sans-serif;
+  font-size: 13px; font-weight: 700;
+  letter-spacing: 0.08em; text-transform: uppercase;
+  cursor: pointer;
+}
+.dashboard-subtabs button.active {
+  background: var(--red); color: var(--white);
+}
+.staff-nutri-slot-form {
+  max-width: 760px; margin-bottom: 28px;
+  padding: 20px; background: var(--card);
+  border: 1px solid var(--border); border-radius: 6px;
+}
+.staff-nutri-form-title,
+.staff-nutri-list-title {
+  font-family: 'Saira Condensed', sans-serif;
+  font-size: 18px; font-weight: 700;
+  color: var(--white); text-transform: uppercase;
+  letter-spacing: 0.05em; margin-bottom: 14px;
+}
+.staff-nutri-form-grid {
+  display: grid; grid-template-columns: 1.4fr 1fr 1fr 1fr;
+  gap: 12px; margin-bottom: 16px;
+}
+.staff-nutri-form-grid label {
+  display: flex; flex-direction: column; gap: 6px;
+  font-family: 'Inter', sans-serif;
+  font-size: 11px; color: var(--muted);
+  text-transform: uppercase; letter-spacing: 0.05em;
+}
+.staff-nutri-form-grid input,
+.staff-nutri-form-grid select {
+  min-width: 0; padding: 10px 11px;
+  background: var(--card2); color: var(--white);
+  border: 1px solid var(--border); border-radius: 4px;
+  font-family: 'Inter', sans-serif; font-size: 13px;
+}
+.staff-nutri-slot-form .btn-primary { max-width: 220px; }
+.staff-nutri-message {
+  margin-top: 10px; color: var(--green);
+  font-family: 'Inter', sans-serif; font-size: 12px;
+}
+.staff-nutri-empty {
+  padding: 20px; max-width: 760px;
+  color: var(--muted); background: var(--card);
+  border: 1px solid var(--border); border-radius: 6px;
+  font-family: 'Inter', sans-serif; font-size: 13px;
+}
+.staff-nutri-day { max-width: 760px; margin-bottom: 24px; }
+.staff-nutri-day h3 {
+  margin-bottom: 10px; color: var(--white);
+  font-family: 'Saira Condensed', sans-serif;
+  font-size: 17px; text-transform: capitalize;
+}
+.staff-nutri-slots {
+  display: grid; grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px;
+}
+.staff-nutri-slot {
+  padding: 12px; min-height: 88px;
+  display: grid; grid-template-columns: auto 1fr;
+  align-items: center; gap: 6px 12px;
+  background: var(--card); border: 1px solid var(--border);
+  border-radius: 5px;
+}
+.staff-nutri-slot.booked {
+  background: var(--green-bg); border-color: rgba(0,200,83,0.28);
+}
+.staff-nutri-time {
+  font-family: 'Saira Condensed', sans-serif;
+  font-size: 20px; font-weight: 700; color: var(--white);
+}
+.staff-nutri-athlete {
+  overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+  font-family: 'Inter', sans-serif; font-size: 12px; color: var(--muted);
+}
+.staff-nutri-slot.booked .staff-nutri-athlete { color: var(--green); }
+.staff-nutri-slot button {
+  grid-column: 1 / -1; border: none; background: transparent;
+  padding: 2px 0; text-align: left; color: var(--muted);
+  font-family: 'Inter', sans-serif; font-size: 11px;
+  text-decoration: underline; cursor: pointer;
+}
+
+@media (max-width: 700px) {
+  .dashboard-subtabs { display: grid; grid-template-columns: 1fr 1fr; }
+  .dashboard-subtabs button { min-width: 0; }
+  .staff-nutri-form-grid { grid-template-columns: 1fr 1fr; }
+  .staff-nutri-slots { grid-template-columns: 1fr 1fr; }
+}

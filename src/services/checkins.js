@@ -24,6 +24,17 @@ export async function hasCheckedInToday(athleteId) {
   return !snap.empty
 }
 
+export async function getCheckinsCountForAthleteToday(athleteId) {
+  const today = getLocalDate()
+  const q = query(
+    collection(db, 'checkins'),
+    where('athleteId', '==', athleteId),
+    where('date', '==', today)
+  )
+  const snap = await getCountFromServer(q)
+  return snap.data().count
+}
+
 export async function addCheckin(athleteId, athleteName) {
   const today = getLocalDate()
   await addDoc(collection(db, 'checkins'), {
