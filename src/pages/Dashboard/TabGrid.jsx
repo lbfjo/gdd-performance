@@ -67,39 +67,53 @@ export default function TabGrid() {
   const weekTotal = (athleteId) =>
     Object.values(checkinsByAthlete[athleteId] ?? {}).reduce((s, n) => s + n, 0)
 
-  // Summary stat computations (only meaningful for current week)
-  const sessionsHoje = athletes.reduce((sum, a) => sum + (checkinsByAthlete[a.id]?.[today] ?? 0), 0)
-
   const totalAthletes = athletes.length
+  const sessionsHoje = athletes.reduce((sum, a) => sum + (checkinsByAthlete[a.id]?.[today] ?? 0), 0)
+  const athletesToday = athletes.filter(a => (checkinsByAthlete[a.id]?.[today] ?? 0) > 0).length
+  const activeThisWeek = athletes.filter(a => weekTotal(a.id) > 0).length
+  const activeThisWeekRate = totalAthletes > 0
+    ? Math.round((activeThisWeek / totalAthletes) * 100)
+    : 0
   const athletesOnTarget = weeklyTarget != null
     ? athletes.filter(a => weekTotal(a.id) >= weeklyTarget).length
     : null
-  const taxaSemanal = weeklyTarget != null && totalAthletes > 0
-    ? Math.round((athletesOnTarget / totalAthletes) * 100)
-    : null
 
   const totalSessions = athletes.reduce((sum, a) => sum + weekTotal(a.id), 0)
-  const presencaMedia = totalAthletes > 0
-    ? (totalSessions / totalAthletes).toFixed(1)
-    : '0.0'
 
   return (
     <>
       {!loading && isCurrentWeek && (
         <div className="grid-summary-row">
           <div className="grid-stat-card">
-            <div className="grid-stat-number" style={{ color: 'var(--green)' }}>{sessionsHoje}</div>
-            <div className="grid-stat-label">Sessões hoje</div>
-          </div>
-          <div className="grid-stat-card">
-            <div className="grid-stat-number" style={{ color: taxaSemanal != null && taxaSemanal >= 50 ? 'var(--green)' : 'var(--red)' }}>
-              {taxaSemanal != null ? `${taxaSemanal}%` : '—'}
+            <div className="grid-stat-number" style={{ color: 'var(--green)' }}>
+              {athletesToday}<span> / {totalAthletes}</span>
             </div>
-            <div className="grid-stat-label">Taxa semanal</div>
+            <div className="grid-stat-label">Atletas hoje</div>
+            <div className="grid-stat-detail">
+              {sessionsHoje} {sessionsHoje === 1 ? 'sessão registada' : 'sessões registadas'}
+            </div>
           </div>
           <div className="grid-stat-card">
-            <div className="grid-stat-number" style={{ color: 'var(--red)' }}>{presencaMedia}</div>
-            <div className="grid-stat-label">Presença média</div>
+            <div className="grid-stat-number">
+              {activeThisWeek}<span> / {totalAthletes}</span>
+            </div>
+            <div className="grid-stat-label">Atletas esta semana</div>
+            <div className="grid-stat-detail">
+              {activeThisWeekRate}% do plantel · {totalSessions} {totalSessions === 1 ? 'sessão' : 'sessões'}
+            </div>
+          </div>
+          <div className="grid-stat-card">
+            <div className="grid-stat-number" style={{ color: athletesOnTarget > 0 ? 'var(--green)' : 'var(--white)' }}>
+              {athletesOnTarget != null
+                ? <>{athletesOnTarget}<span> / {totalAthletes}</span></>
+                : '—'}
+            </div>
+            <div className="grid-stat-label">Objetivo atingido</div>
+            <div className="grid-stat-detail">
+              {weeklyTarget != null
+                ? `${weeklyTarget} ${weeklyTarget === 1 ? 'sessão' : 'sessões'} por atleta`
+                : 'Define o objetivo nas configurações'}
+            </div>
           </div>
         </div>
       )}

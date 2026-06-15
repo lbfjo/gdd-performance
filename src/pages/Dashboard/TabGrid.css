@@ -17,6 +17,11 @@
   font-size: 28px;
   font-weight: 700;
   line-height: 1;
+  color: var(--white);
+}
+.grid-stat-number span {
+  font-size: 0.55em;
+  color: var(--muted);
 }
 .grid-stat-label {
   font-family: 'Inter', sans-serif;
@@ -25,6 +30,13 @@
   margin-top: 5px;
   letter-spacing: 0.06em;
   text-transform: uppercase;
+}
+.grid-stat-detail {
+  min-height: 16px;
+  margin-top: 7px;
+  font-family: 'Inter', sans-serif;
+  font-size: 10px;
+  color: var(--muted);
 }
 
 .grid-controls {
