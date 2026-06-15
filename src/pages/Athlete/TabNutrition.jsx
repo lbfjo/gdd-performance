@@ -24,11 +24,9 @@ function MealPlanDisplay({ plan }) {
       )}
 
       <div className="meal-cards">
-        {plan.meals.map((m, i) => (
-          <div key={i} className={`meal-card${m.type === 'training' ? ' meal-card-training' : ''}`}>
-            <span className={`meal-card-time${m.type === 'training' ? ' training' : ''}`}>
-              {m.time}
-            </span>
+        {plan.meals.filter(m => m.type !== 'training').map((m, i) => (
+          <div key={i} className="meal-card">
+            <span className="meal-card-time">{m.time}</span>
             <div className="meal-card-body">
               <span className="meal-card-title">{m.title}</span>
               {m.description && <span className="meal-card-desc">{m.description}</span>}
@@ -36,6 +34,28 @@ function MealPlanDisplay({ plan }) {
           </div>
         ))}
       </div>
+
+      {plan.meals.filter(m => m.type === 'training').map((t, i) => (
+        <div key={i} className="home-training-card">
+          <div className="home-training-header">
+            <div className="home-training-title-row">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--amber)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M6.5 6.5h11M6.5 17.5h11M2 12h2M20 12h2M4 8v8M20 8v8M7 8v8M17 8v8" />
+              </svg>
+              <span className="home-training-title">{t.title}</span>
+            </div>
+            <span className="home-training-time">{t.time}</span>
+          </div>
+          {t.description && (
+            <div className="home-training-desc">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--muted)" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                <rect x="3" y="3" width="18" height="18" rx="2" /><path d="M8 7h8M8 12h8M8 17h4" />
+              </svg>
+              <span>{t.description}</span>
+            </div>
+          )}
+        </div>
+      ))}
 
       {plan.notes && (
         <div className="plan-notes">

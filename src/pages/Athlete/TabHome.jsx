@@ -168,15 +168,6 @@ export default function TabHome({ athlete, onNavigate }) {
   })
 
   const goal = mealPlan?.goal
-  const latestWeight = todayWeight?.weight || lastWeight?.weight
-  const goalDelta = goal?.weight && latestWeight ? (goal.weight - latestWeight) : null
-  const goalPct = goal?.weight && latestWeight ? Math.min(100, Math.max(0, Math.round((1 - Math.abs(goal.weight - latestWeight) / Math.abs(goal.weight - (latestWeight - (goalDelta || 0)))) * 100))) : null
-
-  const progressPct = goal?.weight && latestWeight
-    ? Math.min(100, Math.max(0, Math.round(
-        ((latestWeight) / goal.weight) * 100
-      )))
-    : null
 
   let banner = null
   if (wt && wc !== null) {
@@ -203,6 +194,69 @@ export default function TabHome({ athlete, onNavigate }) {
       <div className="home-greeting">
         <h1 className="home-greeting-name" style={{ fontSize: 28 }}>Olá, {firstName}</h1>
         <p className="home-date">{dateStr}</p>
+      </div>
+
+      {/* Check-in + Stats */}
+      <div className="home-checkin-section">
+        {wt ? (
+          <div className="home-weekly-ring-wrap">
+            <CircularRing count={wc} target={wt} />
+            <p className="home-stat-label" style={{ marginTop: 6, textAlign: 'center' }}>Objetivo semanal</p>
+          </div>
+        ) : (
+          <div className="home-stats">
+            <div className="home-stat">
+              <div className="home-stat-number" style={{ color: 'var(--red)' }}>{wc}</div>
+              <div className="home-stat-label">Esta semana</div>
+            </div>
+            <div className="home-stat">
+              <div className="home-stat-number" style={{ color: 'var(--white)' }}>{total ?? '—'}</div>
+              <div className="home-stat-label">Total sessões</div>
+            </div>
+          </div>
+        )}
+
+        {wt && (
+          <div className="home-stats" style={{ marginTop: 0 }}>
+            <div className="home-stat">
+              <div className="home-stat-number" style={{ color: 'var(--white)' }}>{total ?? '—'}</div>
+              <div className="home-stat-label">Total sessões</div>
+            </div>
+            <div className="home-stat">
+              {streak > 0 ? (
+                <>
+                  <div className="home-stat-number" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 4 }}>
+                    <span style={{ fontSize: 26 }}>🔥</span>
+                    <span style={{ color: 'var(--amber)', fontFamily: "'Saira Condensed', sans-serif", fontWeight: 700, fontSize: 28 }}>{streak}</span>
+                  </div>
+                  <div className="home-stat-label">dias seguidos</div>
+                </>
+              ) : (
+                <>
+                  <div style={{ fontSize: 22, marginBottom: 4, opacity: 0.3 }}>🔥</div>
+                  <div className="home-stat-label" style={{ fontSize: 11 }}>Sem streak ativo</div>
+                </>
+              )}
+            </div>
+          </div>
+        )}
+
+        {banner && (
+          <div className={`home-banner home-banner-${banner.type}`}>{banner.text}</div>
+        )}
+
+        <div className="home-checkin-btn">
+          {checkedIn ? (
+            <div className="home-already">
+              <span style={{ fontSize: 20 }}>✓</span>
+              <p className="home-already-text">Check-in feito hoje!</p>
+            </div>
+          ) : (
+            <button className="btn-primary" onClick={handleCheckin} disabled={checking}>
+              {checking ? 'A registar…' : 'Fazer Check-in'}
+            </button>
+          )}
+        </div>
       </div>
 
       {/* Peso de Hoje */}
@@ -277,44 +331,26 @@ export default function TabHome({ athlete, onNavigate }) {
         </div>
       </div>
 
-      {/* RESUMO card */}
-      {goal?.weight > 0 && latestWeight && (
-        <div className="home-resumo">
-          <p className="home-resumo-title">RESUMO</p>
-          <div className="home-resumo-cols">
-            <div className="home-resumo-col">
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--green)" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-                <polyline points="23 6 13.5 15.5 8.5 10.5 1 18" /><polyline points="17 6 23 6 23 12" />
+      {/* Training card (replaces RESUMO) */}
+      {mealPlan?.meals?.filter(m => m.type === 'training').map((t, i) => (
+        <div key={i} className="home-training-card">
+          <div className="home-training-header">
+            <div className="home-training-title-row">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--amber)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M6.5 6.5h11M6.5 17.5h11M2 12h2M20 12h2M4 8v8M20 8v8M7 8v8M17 8v8" />
               </svg>
-              <span className="home-resumo-label">Meta</span>
-              <span className="home-resumo-value">{goal.weight} kg</span>
+              <span className="home-training-title">{t.title}</span>
             </div>
-            <div className="home-resumo-col">
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--muted)" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-                <rect x="3" y="3" width="18" height="18" rx="2" /><path d="M9 12h6M12 9v6" />
-              </svg>
-              <span className="home-resumo-label">Último peso</span>
-              <span className="home-resumo-value">{latestWeight} kg</span>
-            </div>
-            <div className="home-resumo-col">
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--red)" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-                <circle cx="12" cy="12" r="10" /><circle cx="12" cy="12" r="6" /><circle cx="12" cy="12" r="2" />
-              </svg>
-              <span className="home-resumo-label">Faltam</span>
-              <span className="home-resumo-value" style={{ color: 'var(--red)' }}>
-                {goalDelta > 0 ? '+' : ''}{goalDelta?.toFixed(1)} kg
-              </span>
-            </div>
+            <span className="home-training-time">{t.time}</span>
           </div>
-          <div className="home-progress-bar">
-            <div className="home-progress-fill" style={{ width: `${progressPct || 0}%` }} />
-          </div>
-          <p className="home-progress-label">{progressPct || 0}% do objetivo concluído</p>
+          {t.description && (
+            <div className="home-training-desc">{t.description}</div>
+          )}
         </div>
-      )}
+      ))}
 
       {/* Refeições de Hoje */}
-      {mealPlan?.meals?.length > 0 && (
+      {mealPlan?.meals?.filter(m => m.type !== 'training').length > 0 && (
         <div className="home-meals-section">
           <div className="home-meals-header">
             <div className="home-meals-title-row">
@@ -331,11 +367,9 @@ export default function TabHome({ athlete, onNavigate }) {
           </div>
 
           <div className="meal-cards">
-            {mealPlan.meals.map((m, i) => (
-              <div key={i} className={`meal-card${m.type === 'training' ? ' meal-card-training' : ''}`}>
-                <span className={`meal-card-time${m.type === 'training' ? ' training' : ''}`}>
-                  {m.time}
-                </span>
+            {mealPlan.meals.filter(m => m.type !== 'training').map((m, i) => (
+              <div key={i} className="meal-card">
+                <span className="meal-card-time">{m.time}</span>
                 <div className="meal-card-body">
                   <span className="meal-card-title">{m.title}</span>
                   {m.description && <span className="meal-card-desc">{m.description}</span>}
@@ -343,15 +377,6 @@ export default function TabHome({ athlete, onNavigate }) {
               </div>
             ))}
           </div>
-
-          {mealPlan.notes && (
-            <div className="home-meals-notes">
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--muted)" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-                <circle cx="12" cy="12" r="10" /><line x1="12" y1="16" x2="12" y2="12" /><line x1="12" y1="8" x2="12.01" y2="8" />
-              </svg>
-              <span>{mealPlan.notes}</span>
-            </div>
-          )}
 
           {onNavigate && (
             <button className="home-plan-link" onClick={() => onNavigate('nutrition')}>
@@ -365,68 +390,15 @@ export default function TabHome({ athlete, onNavigate }) {
         </div>
       )}
 
-      {/* Check-in + Stats */}
-      <div className="home-checkin-section">
-        {wt ? (
-          <div className="home-weekly-ring-wrap">
-            <CircularRing count={wc} target={wt} />
-            <p className="home-stat-label" style={{ marginTop: 6, textAlign: 'center' }}>Objetivo semanal</p>
-          </div>
-        ) : (
-          <div className="home-stats">
-            <div className="home-stat">
-              <div className="home-stat-number" style={{ color: 'var(--red)' }}>{wc}</div>
-              <div className="home-stat-label">Esta semana</div>
-            </div>
-            <div className="home-stat">
-              <div className="home-stat-number" style={{ color: 'var(--white)' }}>{total ?? '—'}</div>
-              <div className="home-stat-label">Total sessões</div>
-            </div>
-          </div>
-        )}
-
-        {wt && (
-          <div className="home-stats" style={{ marginTop: 0 }}>
-            <div className="home-stat">
-              <div className="home-stat-number" style={{ color: 'var(--white)' }}>{total ?? '—'}</div>
-              <div className="home-stat-label">Total sessões</div>
-            </div>
-            <div className="home-stat">
-              {streak > 0 ? (
-                <>
-                  <div className="home-stat-number" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 4 }}>
-                    <span style={{ fontSize: 26 }}>🔥</span>
-                    <span style={{ color: 'var(--amber)', fontFamily: "'Saira Condensed', sans-serif", fontWeight: 700, fontSize: 28 }}>{streak}</span>
-                  </div>
-                  <div className="home-stat-label">dias seguidos</div>
-                </>
-              ) : (
-                <>
-                  <div style={{ fontSize: 22, marginBottom: 4, opacity: 0.3 }}>🔥</div>
-                  <div className="home-stat-label" style={{ fontSize: 11 }}>Sem streak ativo</div>
-                </>
-              )}
-            </div>
-          </div>
-        )}
-
-        {banner && (
-          <div className={`home-banner home-banner-${banner.type}`}>{banner.text}</div>
-        )}
-
-        <div className="home-checkin-btn">
-          {checkedIn ? (
-            <div className="home-already">
-              <span style={{ fontSize: 20 }}>✓</span>
-              <p className="home-already-text">Check-in feito hoje!</p>
-            </div>
-          ) : (
-            <button className="btn-primary" onClick={handleCheckin} disabled={checking}>
-              {checking ? 'A registar…' : 'Fazer Check-in'}
-            </button>
-          )}
+      {mealPlan?.notes && (
+        <div className="home-notes-card">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--muted)" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+            <circle cx="12" cy="12" r="10" /><line x1="12" y1="16" x2="12" y2="12" /><line x1="12" y1="8" x2="12.01" y2="8" />
+          </svg>
+          <span>{mealPlan.notes}</span>
         </div>
-      </div>
+      )}
+
     </>
   )
 }
