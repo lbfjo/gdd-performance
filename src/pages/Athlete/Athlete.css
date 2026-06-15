@@ -3,7 +3,7 @@
   min-height: 100dvh;
   display: flex; flex-direction: column;
   background: var(--dark);
-  max-width: 480px; margin: 0 auto;
+  width: 100%; max-width: 480px; margin: 0 auto;
   position: relative; overflow: hidden;
 }
 
@@ -16,7 +16,7 @@
 /* ── Athlete app shell ── */
 .athlete-page {
   min-height: 100dvh; display: flex; flex-direction: column;
-  background: var(--dark); max-width: 480px; margin: 0 auto;
+  background: var(--dark); width: 100%; max-width: 480px; margin: 0 auto;
 }
 
 /* ── Header ── */
