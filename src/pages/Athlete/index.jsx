@@ -95,7 +95,7 @@ export default function Athlete() {
       </div>
 
       <div className="athlete-content">
-        {activeTab === 'home'     && <TabHome     athlete={athlete} />}
+        {activeTab === 'home'     && <TabHome     athlete={athlete} onNavigate={setActiveTab} />}
         {activeTab === 'history'  && <TabHistory  athlete={athlete} />}
         {activeTab === 'ranking'    && <TabRanking   athlete={athlete} />}
         {activeTab === 'nutrition'  && <TabNutrition athlete={athlete} />}

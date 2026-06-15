@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { getAthletes } from '../../services/athletes'
+import { getAthletes, getAthleteMealPlan, updateAthleteMealPlan } from '../../services/athletes'
 import { getCheckinsForAthlete } from '../../services/checkins'
 import { getWeightHistory } from '../../services/nutrition'
 import { getLocalDate, getWeekBounds } from '../../lib/dates'
@@ -84,12 +84,171 @@ function WeightChart({ data }) {
   )
 }
 
+const EMPTY_GOAL = { weight: '', deadline: '', description: '' }
+const EMPTY_MEAL = { time: '', title: '', description: '', type: 'meal' }
+
+function MealPlanEditor({ plan, onSave }) {
+  const [goal, setGoal] = useState(plan?.goal || EMPTY_GOAL)
+  const [meals, setMeals] = useState(plan?.meals?.length ? plan.meals : [{ ...EMPTY_MEAL }])
+  const [notes, setNotes] = useState(plan?.notes || '')
+  const [saving, setSaving] = useState(false)
+  const [saved, setSaved] = useState(false)
+
+  function updateMeal(i, field, value) {
+    setMeals(prev => prev.map((m, j) => j === i ? { ...m, [field]: value } : m))
+    setSaved(false)
+  }
+
+  function addMeal() {
+    setMeals(prev => [...prev, { ...EMPTY_MEAL }])
+  }
+
+  function removeMeal(i) {
+    setMeals(prev => prev.filter((_, j) => j !== i))
+    setSaved(false)
+  }
+
+  function moveMeal(i, dir) {
+    setMeals(prev => {
+      const next = [...prev]
+      const target = i + dir
+      if (target < 0 || target >= next.length) return prev
+      ;[next[i], next[target]] = [next[target], next[i]]
+      return next
+    })
+    setSaved(false)
+  }
+
+  async function handleSave() {
+    setSaving(true); setSaved(false)
+    const data = {
+      goal: {
+        weight: parseFloat(String(goal.weight).replace(',', '.')) || 0,
+        deadline: goal.deadline,
+        description: goal.description,
+      },
+      meals: meals.filter(m => m.title || m.time),
+      notes,
+    }
+    await onSave(data)
+    setSaving(false); setSaved(true)
+  }
+
+  return (
+    <>
+      <p className="athlete-section-title">Objetivo</p>
+      <div className="meal-plan-goal-section">
+        <div className="meal-plan-goal-row">
+          <label>
+            <span className="meal-plan-label">Peso alvo (kg)</span>
+            <input
+              type="text" inputMode="decimal"
+              className="meal-plan-input"
+              placeholder="97.5"
+              value={goal.weight}
+              onChange={e => { setGoal(g => ({ ...g, weight: e.target.value })); setSaved(false) }}
+            />
+          </label>
+          <label>
+            <span className="meal-plan-label">Prazo</span>
+            <input
+              type="text"
+              className="meal-plan-input"
+              placeholder="julho"
+              value={goal.deadline}
+              onChange={e => { setGoal(g => ({ ...g, deadline: e.target.value })); setSaved(false) }}
+            />
+          </label>
+        </div>
+        <label>
+          <span className="meal-plan-label">Descrição do objetivo</span>
+          <input
+            type="text"
+            className="meal-plan-input meal-plan-input-full"
+            placeholder="Aumento muscular (+3kg)"
+            value={goal.description}
+            onChange={e => { setGoal(g => ({ ...g, description: e.target.value })); setSaved(false) }}
+          />
+        </label>
+      </div>
+
+      <p className="athlete-section-title" style={{ marginTop: 20 }}>Refeições</p>
+      <div className="meal-entries">
+        {meals.map((m, i) => (
+          <div key={i} className={`meal-entry${m.type === 'training' ? ' meal-entry-training' : ''}`}>
+            <div className="meal-entry-header">
+              <span className="meal-entry-num">#{i + 1}</span>
+              <select
+                className="meal-entry-type"
+                value={m.type}
+                onChange={e => updateMeal(i, 'type', e.target.value)}
+              >
+                <option value="meal">Refeição</option>
+                <option value="training">Treino</option>
+                <option value="snack">Snack</option>
+              </select>
+              <div className="meal-entry-actions">
+                <button className="meal-move-btn" onClick={() => moveMeal(i, -1)} disabled={i === 0}>↑</button>
+                <button className="meal-move-btn" onClick={() => moveMeal(i, 1)} disabled={i === meals.length - 1}>↓</button>
+                <button className="meal-remove-btn" onClick={() => removeMeal(i)}>×</button>
+              </div>
+            </div>
+            <div className="meal-entry-inputs">
+              <input
+                type="text"
+                className="meal-plan-input meal-entry-time"
+                placeholder="07:30"
+                value={m.time}
+                onChange={e => updateMeal(i, 'time', e.target.value)}
+              />
+              <input
+                type="text"
+                className="meal-plan-input meal-entry-title"
+                placeholder="Nome da refeição"
+                value={m.title}
+                onChange={e => updateMeal(i, 'title', e.target.value)}
+              />
+            </div>
+            <textarea
+              className="meal-plan-input meal-entry-desc"
+              placeholder="Detalhes (quantidades, alternativas…)"
+              value={m.description}
+              onChange={e => updateMeal(i, 'description', e.target.value)}
+              rows={2}
+            />
+          </div>
+        ))}
+      </div>
+      <button className="meal-add-btn" onClick={addMeal}>+ Adicionar refeição</button>
+
+      <p className="athlete-section-title" style={{ marginTop: 20 }}>Notas</p>
+      <textarea
+        className="meal-plan-editor"
+        placeholder="Suplementos, água, notas gerais…"
+        value={notes}
+        onChange={e => { setNotes(e.target.value); setSaved(false) }}
+        rows={4}
+      />
+
+      <div className="meal-plan-actions">
+        <button className="btn-primary" onClick={handleSave} disabled={saving}>
+          {saving ? 'A guardar…' : 'Guardar plano'}
+        </button>
+        {saved && <span className="meal-plan-saved">✓ Guardado</span>}
+      </div>
+    </>
+  )
+}
+
 export default function TabAthlete() {
   const [athletes, setAthletes] = useState([])
   const [search, setSearch] = useState('')
   const [selected, setSelected] = useState(null)
   const [checkins, setCheckins] = useState([])
   const [weightHist, setWeightHist] = useState([])
+  const [mealPlan, setMealPlan] = useState(null)
+  const [savingPlan, setSavingPlan] = useState(false)
+  const [planSaved, setPlanSaved] = useState(false)
   const [loading, setLoading] = useState(false)
 
   useEffect(() => { getAthletes().then(setAthletes).catch(() => {}) }, [])
@@ -100,11 +259,20 @@ export default function TabAthlete() {
 
   async function selectAthlete(a) {
     setSelected(a); setSearch(a.name); setLoading(true)
-    const [cs, wh] = await Promise.all([
+    const [cs, wh, mp] = await Promise.all([
       getCheckinsForAthlete(a.id).catch(() => []),
       getWeightHistory(a.id, 30).catch(() => []),
+      getAthleteMealPlan(a.id).catch(() => null),
     ])
-    setCheckins(cs); setWeightHist(wh); setLoading(false)
+    setCheckins(cs); setWeightHist(wh)
+    setMealPlan(mp)
+    setLoading(false)
+  }
+
+  async function handleSaveMealPlan(data) {
+    if (!selected) return
+    await updateAthleteMealPlan(selected.id, data)
+    setMealPlan(data)
   }
 
   const { start: weekStart, end: weekEnd } = getWeekBounds(getLocalDate())
@@ -209,6 +377,9 @@ export default function TabAthlete() {
               </>
             )
           })()}
+
+          <div className="athlete-section-divider" />
+          <MealPlanEditor plan={mealPlan} onSave={handleSaveMealPlan} />
         </>
       )}
 

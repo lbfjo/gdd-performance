@@ -67,3 +67,15 @@ export async function setFirstTimePin(athleteId, newPin) {
   const pinHash = await hashPin(newPin)
   await updateDoc(doc(db, 'athletes', athleteId), { pin: pinHash, pinSet: true })
 }
+
+export async function getAthleteMealPlan(athleteId) {
+  const snap = await getDoc(doc(db, 'athletes', athleteId))
+  if (!snap.exists()) return null
+  const data = snap.data().mealPlan
+  if (!data || typeof data === 'string') return null
+  return data
+}
+
+export async function updateAthleteMealPlan(athleteId, mealPlan) {
+  await updateDoc(doc(db, 'athletes', athleteId), { mealPlan })
+}

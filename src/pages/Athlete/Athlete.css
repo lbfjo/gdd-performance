@@ -532,8 +532,255 @@
   font-size: 16px; font-weight: 700; color: var(--white);
 }
 
+/* ── Redesigned Home — Date ── */
+.home-date {
+  font-family: 'Inter', sans-serif;
+  font-size: 13px; color: var(--muted);
+  margin-top: 2px; text-transform: capitalize;
+}
+
+/* ── Redesigned Home — Peso de Hoje ── */
+.home-peso-card {
+  background: var(--card); border: 1px solid var(--border);
+  border-radius: 8px; padding: 18px 16px;
+  margin-bottom: 14px;
+}
+.home-peso-header { margin-bottom: 14px; }
+.home-peso-title-row {
+  display: flex; align-items: center; gap: 8px;
+  margin-bottom: 2px;
+}
+.home-peso-title {
+  font-family: 'Saira Condensed', sans-serif;
+  font-size: 14px; font-weight: 700;
+  letter-spacing: 0.08em; text-transform: uppercase;
+  color: var(--white);
+}
+.home-peso-subtitle {
+  font-family: 'Inter', sans-serif;
+  font-size: 12px; color: var(--muted);
+}
+.home-peso-form { display: flex; flex-direction: column; gap: 8px; }
+.home-peso-input-row {
+  display: flex; align-items: center; gap: 8px;
+}
+.home-peso-input {
+  flex: 1; background: var(--card2); border: 1px solid var(--border);
+  border-radius: 6px; padding: 14px 16px;
+  font-family: 'Saira Condensed', sans-serif;
+  font-size: 28px; font-weight: 700;
+  color: var(--white); outline: none;
+  -moz-appearance: textfield;
+}
+.home-peso-input::-webkit-outer-spin-button,
+.home-peso-input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+.home-peso-input:focus { border-color: var(--red); }
+.home-peso-input::placeholder { color: var(--muted); font-weight: 400; font-size: 20px; }
+.home-peso-unit {
+  font-family: 'Saira Condensed', sans-serif;
+  font-size: 16px; font-weight: 700; color: var(--muted);
+}
+.home-peso-btn {
+  background: var(--red); color: var(--white); border: none;
+  border-radius: 6px; padding: 14px 24px;
+  font-family: 'Saira Condensed', sans-serif;
+  font-size: 14px; font-weight: 700;
+  letter-spacing: 0.06em; text-transform: uppercase;
+  cursor: pointer; white-space: nowrap;
+  transition: background 0.15s;
+}
+.home-peso-btn:active { background: var(--red-dark); }
+.home-peso-btn:disabled { opacity: 0.5; cursor: default; }
+.home-peso-logged { display: flex; flex-direction: column; }
+.home-peso-logged-row {
+  display: flex; align-items: center; justify-content: space-between;
+}
+.home-peso-value {
+  font-family: 'Saira Condensed', sans-serif;
+  font-size: 32px; font-weight: 700; color: var(--green);
+}
+.home-peso-info {
+  display: flex; gap: 16px; margin-top: 14px;
+  padding-top: 14px; border-top: 1px solid var(--border);
+}
+.home-peso-info-item {
+  display: flex; align-items: flex-start; gap: 8px; flex: 1;
+}
+.home-peso-info-item div { display: flex; flex-direction: column; }
+.home-peso-info-label {
+  font-family: 'Inter', sans-serif;
+  font-size: 11px; color: var(--muted);
+  letter-spacing: 0.02em;
+}
+.home-peso-info-value {
+  font-family: 'Saira Condensed', sans-serif;
+  font-size: 16px; font-weight: 700; color: var(--white);
+}
+
+/* ── Redesigned Home — RESUMO card ── */
+.home-resumo {
+  background: var(--card); border: 1px solid var(--border);
+  border-radius: 8px; padding: 16px;
+  margin-bottom: 14px;
+}
+.home-resumo-title {
+  font-family: 'Saira Condensed', sans-serif;
+  font-size: 13px; font-weight: 700;
+  letter-spacing: 0.08em; text-transform: uppercase;
+  color: var(--muted); margin-bottom: 12px;
+}
+.home-resumo-cols {
+  display: grid; grid-template-columns: 1fr 1fr 1fr;
+  gap: 8px; margin-bottom: 14px;
+}
+.home-resumo-col {
+  display: flex; flex-direction: column; align-items: center;
+  gap: 4px; text-align: center;
+}
+.home-resumo-label {
+  font-family: 'Inter', sans-serif;
+  font-size: 11px; color: var(--muted);
+  letter-spacing: 0.02em;
+}
+.home-resumo-value {
+  font-family: 'Saira Condensed', sans-serif;
+  font-size: 20px; font-weight: 700; color: var(--white);
+}
+.home-progress-bar {
+  height: 6px; background: var(--card2);
+  border-radius: 3px; overflow: hidden;
+  margin-bottom: 8px;
+}
+.home-progress-fill {
+  height: 100%; background: var(--red);
+  border-radius: 3px;
+  transition: width 0.4s ease;
+}
+.home-progress-label {
+  font-family: 'Inter', sans-serif;
+  font-size: 12px; color: var(--muted);
+  text-align: center;
+}
+
+/* ── Redesigned Home — Meals section ── */
+.home-meals-section {
+  background: var(--card); border: 1px solid var(--border);
+  border-radius: 8px; padding: 16px;
+  margin-bottom: 14px;
+}
+.home-meals-header {
+  display: flex; align-items: center; justify-content: space-between;
+  margin-bottom: 14px;
+}
+.home-meals-title-row {
+  display: flex; align-items: center; gap: 8px;
+  font-family: 'Saira Condensed', sans-serif;
+  font-size: 13px; font-weight: 700;
+  letter-spacing: 0.08em; text-transform: uppercase;
+  color: var(--muted);
+}
+.home-meals-link {
+  background: none; border: none; padding: 0;
+  font-family: 'Inter', sans-serif;
+  font-size: 12px; font-weight: 500;
+  color: var(--red); cursor: pointer;
+  transition: opacity 0.15s;
+}
+.home-meals-link:hover { opacity: 0.8; }
+
+.home-meals-notes {
+  display: flex; align-items: flex-start; gap: 8px;
+  margin-top: 12px; padding-top: 12px;
+  border-top: 1px solid var(--border);
+  font-family: 'Inter', sans-serif;
+  font-size: 12px; color: var(--muted);
+  line-height: 1.5; white-space: pre-wrap;
+}
+
+.home-plan-link {
+  display: flex; align-items: center; gap: 8px;
+  width: 100%; margin-top: 12px; padding-top: 12px;
+  border-top: 1px solid var(--border);
+  background: none; border-left: none; border-right: none; border-bottom: none;
+  font-family: 'Inter', sans-serif;
+  font-size: 13px; font-weight: 500;
+  color: var(--muted); cursor: pointer;
+  transition: color 0.15s;
+}
+.home-plan-link:hover { color: var(--white); }
+
+.home-checkin-section { margin-top: 8px; }
+
+/* ── Meal cards (shared between home and nutrition tab) ── */
+.meal-cards {
+  display: flex; flex-direction: column; gap: 2px;
+}
+.meal-card {
+  display: flex; align-items: flex-start; gap: 14px;
+  padding: 12px 0;
+  border-bottom: 1px solid var(--border);
+}
+.meal-card:last-child { border-bottom: none; }
+.meal-card-training {
+  border-bottom-color: rgba(245,158,11,0.15);
+}
+.meal-card-time {
+  font-family: 'Saira Condensed', sans-serif;
+  font-size: 15px; font-weight: 700;
+  color: var(--red);
+  min-width: 50px; flex-shrink: 0;
+  padding-top: 1px;
+}
+.meal-card-time.training { color: var(--amber); }
+.meal-card-body {
+  display: flex; flex-direction: column; gap: 2px;
+  flex: 1; min-width: 0;
+}
+.meal-card-title {
+  font-family: 'Inter', sans-serif;
+  font-size: 14px; font-weight: 600; color: var(--white);
+}
+.meal-card-desc {
+  font-family: 'Inter', sans-serif;
+  font-size: 12px; color: var(--muted);
+  line-height: 1.5; white-space: pre-wrap;
+  word-wrap: break-word;
+}
+
+/* ── Nutrition tab — Plan display extras ── */
+.plan-goal-banner {
+  display: flex; align-items: center; gap: 8px;
+  background: var(--red-bg); border: 1px solid rgba(200,16,46,0.2);
+  border-radius: 6px; padding: 12px 14px;
+  margin-bottom: 16px;
+  font-family: 'Inter', sans-serif;
+  font-size: 13px; color: var(--white);
+}
+.plan-goal-weight {
+  margin-left: auto; flex-shrink: 0;
+  font-family: 'Saira Condensed', sans-serif;
+  font-size: 18px; font-weight: 700;
+  color: var(--red);
+}
+.plan-notes {
+  margin-top: 16px; padding: 14px;
+  background: var(--card); border: 1px solid var(--border);
+  border-radius: 6px;
+}
+.plan-notes-title {
+  font-family: 'Saira Condensed', sans-serif;
+  font-size: 12px; font-weight: 700;
+  letter-spacing: 0.08em; text-transform: uppercase;
+  color: var(--muted); margin-bottom: 8px;
+}
+.plan-notes-text {
+  font-family: 'Inter', sans-serif;
+  font-size: 13px; color: var(--white);
+  line-height: 1.6; white-space: pre-wrap;
+}
+
 .nutri-subtabs {
-  display: grid; grid-template-columns: 1fr 1fr;
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(0, 1fr));
   background: var(--card); border: 1px solid var(--border);
   border-radius: 6px; padding: 4px; margin-bottom: 20px;
 }

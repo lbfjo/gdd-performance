@@ -73,3 +73,110 @@
   font-size: 13px; color: var(--muted);
   padding: 16px 0;
 }
+
+.meal-plan-label {
+  display: block;
+  font-family: 'Inter', sans-serif; font-size: 11px;
+  color: var(--muted); letter-spacing: 0.04em; text-transform: uppercase;
+  margin-bottom: 4px;
+}
+.meal-plan-input {
+  width: 100%;
+  background: var(--card2); border: 1px solid var(--border);
+  border-radius: 4px; padding: 10px 12px;
+  font-family: 'Inter', sans-serif; font-size: 13px;
+  color: var(--white); outline: none;
+  transition: border-color 0.15s;
+}
+.meal-plan-input:focus { border-color: rgba(200,16,46,0.5); }
+.meal-plan-input::placeholder { color: var(--muted); }
+
+.meal-plan-goal-section {
+  display: flex; flex-direction: column; gap: 10px;
+  margin-bottom: 8px;
+}
+.meal-plan-goal-row {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 10px;
+}
+.meal-plan-input-full { width: 100%; }
+
+.meal-entries {
+  display: flex; flex-direction: column; gap: 8px;
+}
+.meal-entry {
+  background: var(--card); border: 1px solid var(--border);
+  border-radius: 6px; padding: 12px;
+}
+.meal-entry-training {
+  border-color: rgba(245,158,11,0.3);
+  background: rgba(245,158,11,0.04);
+}
+.meal-entry-header {
+  display: flex; align-items: center; gap: 8px;
+  margin-bottom: 8px;
+}
+.meal-entry-num {
+  font-family: 'Saira Condensed', sans-serif;
+  font-size: 14px; font-weight: 700;
+  color: var(--muted); min-width: 24px;
+}
+.meal-entry-type {
+  background: var(--card2); border: 1px solid var(--border);
+  border-radius: 4px; padding: 4px 8px;
+  font-family: 'Inter', sans-serif; font-size: 12px;
+  color: var(--white); outline: none;
+}
+.meal-entry-actions {
+  margin-left: auto; display: flex; gap: 4px;
+}
+.meal-move-btn, .meal-remove-btn {
+  background: var(--card2); border: 1px solid var(--border);
+  border-radius: 4px; width: 28px; height: 28px;
+  color: var(--muted); font-size: 14px;
+  cursor: pointer; display: flex; align-items: center; justify-content: center;
+  transition: color 0.15s, border-color 0.15s;
+}
+.meal-move-btn:hover { color: var(--white); }
+.meal-move-btn:disabled { opacity: 0.3; cursor: default; }
+.meal-remove-btn { color: var(--red); }
+.meal-remove-btn:hover { border-color: var(--red); }
+
+.meal-entry-inputs {
+  display: grid; grid-template-columns: 80px 1fr; gap: 8px;
+  margin-bottom: 8px;
+}
+.meal-entry-time { text-align: center; }
+.meal-entry-desc {
+  resize: vertical; min-height: 48px;
+  line-height: 1.5;
+}
+
+.meal-add-btn {
+  width: 100%; padding: 10px;
+  background: transparent; border: 1px dashed var(--border);
+  border-radius: 6px; color: var(--muted);
+  font-family: 'Inter', sans-serif; font-size: 13px;
+  cursor: pointer; transition: color 0.15s, border-color 0.15s;
+  margin-top: 8px;
+}
+.meal-add-btn:hover { color: var(--white); border-color: var(--muted); }
+
+.meal-plan-editor {
+  width: 100%; resize: vertical;
+  background: var(--card2); border: 1px solid var(--border);
+  border-radius: 4px; padding: 14px 16px;
+  font-family: 'Inter', sans-serif; font-size: 13px; line-height: 1.6;
+  color: var(--white); outline: none;
+  transition: border-color 0.15s;
+}
+.meal-plan-editor:focus { border-color: rgba(200,16,46,0.5); }
+.meal-plan-editor::placeholder { color: var(--muted); }
+
+.meal-plan-actions {
+  display: flex; align-items: center; gap: 12px;
+  margin-top: 14px;
+}
+.meal-plan-saved {
+  font-family: 'Inter', sans-serif;
+  font-size: 12px; color: var(--green);
+}
