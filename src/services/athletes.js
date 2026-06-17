@@ -1,6 +1,6 @@
 import {
   collection, query, where, orderBy, getDocs,
-  doc, getDoc, addDoc, updateDoc
+  doc, getDoc, addDoc, updateDoc, serverTimestamp
 } from 'firebase/firestore'
 import { db } from '../firebase'
 import { hashPin } from '../lib/hash'
@@ -8,14 +8,23 @@ import { hashPin } from '../lib/hash'
 export async function getAthletes() {
   const q = query(collection(db, 'athletes'), where('active', '==', true), orderBy('name'))
   const snap = await getDocs(q)
-  return snap.docs.map(d => ({ id: d.id, name: d.data().name, position: d.data().position }))
+  return snap.docs.map(d => {
+    const data = d.data()
+    return {
+      id: d.id,
+      name: data.name,
+      position: data.position,
+      staffStatus: data.staffStatus,
+    }
+  })
 }
 
 export async function getAllAthletes() {
   const q = query(collection(db, 'athletes'), orderBy('name'))
   const snap = await getDocs(q)
   return snap.docs.map(d => {
-    const { pin: _, ...rest } = d.data()
+    const rest = { ...d.data() }
+    delete rest.pin
     return { id: d.id, ...rest }
   })
 }
@@ -78,4 +87,14 @@ export async function getAthleteMealPlan(athleteId) {
 
 export async function updateAthleteMealPlan(athleteId, mealPlan) {
   await updateDoc(doc(db, 'athletes', athleteId), { mealPlan })
+}
+
+export async function updateAthleteStatus(athleteId, staffStatus) {
+  await updateDoc(doc(db, 'athletes', athleteId), {
+    staffStatus: {
+      type: staffStatus.type,
+      note: staffStatus.note || '',
+      updatedAt: serverTimestamp(),
+    },
+  })
 }

@@ -5,6 +5,8 @@ import { getConfig } from '../../services/config'
 import { getLocalDate, getWeekBounds } from '../../lib/dates'
 import './TabAlerts.css'
 
+const ALERT_EXEMPT_STATUSES = new Set(['injured', 'excused', 'away'])
+
 export default function TabAlerts() {
   const [alerts, setAlerts] = useState([])
   const [atRisk, setAtRisk] = useState([])
@@ -25,6 +27,7 @@ export default function TabAlerts() {
       ])
 
       const weeklyTarget = cfg.weeklyTarget ?? 3
+      const alertAthletes = athletes.filter(a => !ALERT_EXEMPT_STATUSES.has(a.staffStatus?.type))
 
       // Separate current-week and prev-week checkins
       const currCheckins = all.filter(c => c.date >= currStart && c.date <= currEnd)
@@ -62,7 +65,7 @@ export default function TabAlerts() {
       setWeekComparison(comparisonDelta)
 
       // Existing alert logic: athletes with 0 check-ins this week
-      const existingAlerts = athletes
+      const existingAlerts = alertAthletes
         .filter(a => !currCountByAthlete[a.id])
         .map(a => ({
           ...a,
@@ -71,14 +74,17 @@ export default function TabAlerts() {
             ? '0 sessões esta semana · 0 na semana passada'
             : '0 sessões esta semana · presente na semana passada',
         }))
-        .sort((a, b) => (a.severity === 'critical' ? -1 : 1))
+        .sort((a, other) => {
+          if (a.severity === other.severity) return a.name.localeCompare(other.name)
+          return a.severity === 'critical' ? -1 : 1
+        })
       setAlerts(existingAlerts)
 
       // At-risk section: 0 sessions this week AND Wednesday or later (dayOfWeek >= 3)
       // dayOfWeek: 0=Sun,1=Mon,2=Tue,3=Wed,4=Thu,5=Fri,6=Sat
       const isWedOrLater = dayOfWeek >= 3 || dayOfWeek === 0 // treat Sunday like "late" too
       if (isWedOrLater) {
-        const urgentAthletes = athletes
+        const urgentAthletes = alertAthletes
           .filter(a => !currCountByAthlete[a.id])
           .map(a => ({
             ...a,
@@ -89,7 +95,7 @@ export default function TabAlerts() {
 
       // Low activity: 1 session when target >= 3
       if (weeklyTarget >= 3) {
-        const lowActive = athletes.filter(a => (currCountByAthlete[a.id] ?? 0) === 1)
+        const lowActive = alertAthletes.filter(a => (currCountByAthlete[a.id] ?? 0) === 1)
         setLowActivity(lowActive)
       }
 

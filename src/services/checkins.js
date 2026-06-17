@@ -1,6 +1,7 @@
 import {
   collection, query, where, orderBy, getDocs,
-  addDoc, serverTimestamp, getCountFromServer
+  addDoc, serverTimestamp, getCountFromServer,
+  deleteDoc, doc
 } from 'firebase/firestore'
 import { db } from '../firebase'
 import { getLocalDate, getWeekBounds, getPreviousWeekBounds } from '../lib/dates'
@@ -37,12 +38,41 @@ export async function getCheckinsCountForAthleteToday(athleteId) {
 
 export async function addCheckin(athleteId, athleteName) {
   const today = getLocalDate()
+  await addCheckinForDate(athleteId, athleteName, today)
+}
+
+export async function addCheckinForDate(athleteId, athleteName, date, source = 'athlete') {
   await addDoc(collection(db, 'checkins'), {
     athleteId,
     athleteName,
-    date: today,
+    date,
+    source,
     timestamp: serverTimestamp(),
   })
+}
+
+export async function addStaffCheckin(athleteId, athleteName, date) {
+  await addCheckinForDate(athleteId, athleteName, date, 'staff')
+}
+
+export async function getCheckinsForAthleteOnDate(athleteId, date) {
+  const q = query(
+    collection(db, 'checkins'),
+    where('athleteId', '==', athleteId),
+    where('date', '==', date)
+  )
+  const snap = await getDocs(q)
+  return snap.docs
+    .map(d => ({ id: d.id, ...d.data() }))
+    .sort((a, b) => {
+      const aTime = a.timestamp?.seconds ?? 0
+      const bTime = b.timestamp?.seconds ?? 0
+      return aTime - bTime
+    })
+}
+
+export async function removeCheckin(checkinId) {
+  await deleteDoc(doc(db, 'checkins', checkinId))
 }
 
 export async function getCheckinsForWeek(dateStr) {
