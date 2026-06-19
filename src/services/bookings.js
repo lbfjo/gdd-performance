@@ -32,6 +32,17 @@ export async function getBookingsForDate(dateStr) {
   return snap.docs.map(d => ({ id: d.id, ...d.data() }))
 }
 
+export async function getBookingsForWeek(startDate, endDate) {
+  const q = query(
+    collection(db, 'bookings'),
+    where('date', '>=', startDate),
+    where('date', '<=', endDate),
+    orderBy('date', 'asc')
+  )
+  const snap = await getDocs(q)
+  return snap.docs.map(d => ({ id: d.id, ...d.data() }))
+}
+
 export async function getBookingsForAthleteOnDate(athleteId, dateStr) {
   const q = query(
     collection(db, 'bookings'),

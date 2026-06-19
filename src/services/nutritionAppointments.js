@@ -40,6 +40,19 @@ export async function getUpcomingNutritionSlots() {
     .sort((a, b) => a.date.localeCompare(b.date) || a.time.localeCompare(b.time))
 }
 
+export async function getNutritionSlotsForWeek(startDate, endDate) {
+  const q = query(
+    collection(db, COLLECTION),
+    where('date', '>=', startDate),
+    where('date', '<=', endDate),
+    orderBy('date', 'asc')
+  )
+  const snap = await getDocs(q)
+  return snap.docs
+    .map(mapSlot)
+    .sort((a, b) => a.date.localeCompare(b.date) || a.time.localeCompare(b.time))
+}
+
 export async function createNutritionSlots({
   date,
   startTime,

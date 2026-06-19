@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { STAFF_SESSION_KEY } from '../Staff'
 import TabGrid from './TabGrid'
+import TabOverview from './TabOverview'
 import TabAthlete from './TabAthlete'
 import TabLeaderboard from './TabLeaderboard'
 import TabAlerts from './TabAlerts'
@@ -14,6 +15,7 @@ import { getLocalDate, getWeekBounds } from '../../lib/dates'
 import './Dashboard.css'
 
 const TABS = [
+  { key: 'overview', label: 'Dashboard' },
   { key: 'grid', label: 'Semana' },
   { key: 'athlete', label: 'Atleta' },
   { key: 'leaderboard', label: 'Ranking' },
@@ -25,7 +27,7 @@ const TABS = [
 
 export default function Dashboard() {
   const navigate = useNavigate()
-  const [activeTab, setActiveTab] = useState('grid')
+  const [activeTab, setActiveTab] = useState('overview')
   const [exporting, setExporting] = useState(false)
 
   useEffect(() => {
@@ -117,6 +119,7 @@ export default function Dashboard() {
         ))}
       </div>
       <div className="dashboard-content">
+        {activeTab === 'overview' && <TabOverview />}
         {activeTab === 'grid' && <TabGrid />}
         {activeTab === 'athlete' && <TabAthlete />}
         {activeTab === 'leaderboard' && <TabLeaderboard />}
